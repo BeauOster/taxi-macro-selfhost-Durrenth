@@ -13,6 +13,7 @@
 #Include %A_ScriptDir%\Lib\keybinds.ahk
 #Include %A_ScriptDir%\Lib\IsProcessElevated.ahk
 #Include %A_ScriptDir%\Lib\updates.ahk
+#Include %A_ScriptDir%\Lib\Maps.ahk
 
 global MacroStartTime := A_TickCount
 global StageStartTime := A_TickCount
@@ -92,7 +93,8 @@ InitializeMacro() {
     }
 
     if (ok := FindText(&X, &Y, 746, 476, 862, 569, 0, 0, AreasText)) {
-        GoToRaids()
+        ;GoToRaids()
+        GoToInfinityCastle()
     }
     else {
         MsgBox("You must be in the lobby with default camera angle to start the macro.", "Error T3", "+0x1000",)
@@ -116,6 +118,51 @@ BetterClick(x, y, LR := "Left") { ; credits to yuh for this, lowk a life saver
     MouseMove(1, 0, , "R")
     MouseClick(LR, -1, 0, , , , "R")
     Sleep(50)
+}
+
+; By @Durrenth
+GoToInfinityCastle() {
+    SendInput ("{Tab}")
+    ;TODO: Find infinity castle button and click it
+    ; Move player to infinity castle circle
+    ; Detect latest room and click it
+    loop {
+        ; go to infinity castle
+        ; if (ok := FindText(&X, &Y, 10, 70, 350, 205, 0, 0, LoadingScreen)) {
+        ;     AddToLog("Found LoadingScreen, stopping loop")
+        ;     break
+        ; }
+        ; if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
+        ;     AddToLog("Found VoteStart, stopping loop")
+        ;     break
+        ; }
+        ; if (ok := FindText(&X, &Y, 338, 505, 536, 572, 0, 0, ClaimText)) ; daily reward
+        ; {
+        ;     BetterClick(406, 497)
+        ;     Sleep 3000
+        ; }
+
+
+        ; go to infinity castle
+        BetterClick(770, 470)
+        Sleep 750
+        BetterClick(280, 340)
+        Sleep 4000
+        SendInput ("{a down}")
+        ;go to teleporter
+        Sleep 3000
+        SendInput ("{a up}")
+        SendInput ("{w down}")
+        Sleep 600
+        SendInput ("{w up}")
+        Sleep 2000
+        ;BetterClick(430,390) Normal Coords
+        BetterClick(425,440)
+        break
+        ;AntiCaptcha()
+    }
+    Sleep 2000
+    MapPlacementInstructions()
 }
 
 GoToRaids() {
@@ -169,6 +216,63 @@ StopMacro() {
     }
     Reload()
 }
+
+DetectMapName() {
+
+    maps := [
+        PlanetGreenie(),
+        WalledCity()
+    ]
+
+    for map in maps {
+        if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, map.MapImage))
+            {
+              return map.Name
+            }
+    }
+
+    return "UnknownMap"
+
+}
+
+MapPlacementInstructions() {
+    mapName := DetectMapName()
+
+    ; Create a Map object
+    mapClasses := Map()
+    mapClasses["PlanetGreenie"] := PlanetGreenie()
+    mapClasses["WalledCity"] := WalledCity()
+    mapClasses["UnknownMap"] := BaseMap()
+
+    AddToLog("Detected mapName: " . mapName) ; Display detected map name
+    
+    ; Loop over mapClasses to find the selected map
+    selectedMap := ""
+    for key, value in mapClasses {
+        if (key = mapName) {
+            selectedMap := value
+            break  ; Exit loop once the map is found
+        }
+    }
+
+    if (selectedMap = "") {
+        AddToLog("UnknownMap")
+        selectedMap := mapClasses["UnknownMap"]
+    }
+    
+    ; Run instructions for the selected map
+    LoadedLoop()
+    AddToLog("Entering Started Loop")
+    StartedLoop()
+    AddToLog("Entering On spawn setup")
+    selectedMap.OnSpawnSetupInfinityCastle
+    AddToLog("entering run instructions")
+    selectedMap.RunInstructions
+    AddToLog("placing units")
+    selectedMap.TryPlacingUnits
+}
+
+
 ; Define the rectangle coordinates
 global startX := 100, startY := 500, endX := 700, endY := 350
 global startY2 := 200, endY2 := 350
