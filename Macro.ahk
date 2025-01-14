@@ -50,9 +50,19 @@ CannotPlaceUnitsArr := [CannotPlaceUnit1, CannotPlaceUnit2, CannotPlaceUnit3, Ca
 
 CheckForUpdates()
 
-
+global backToLobbyEnabled := 0
 global cardPickerEnabled := 1
 global hasReconnect := 0
+global GameModes := Map()
+GameModes["halloweenEvent"] := () => GoToHalloweenEvent()
+GameModes["infinityCastle"] := () => GoToInfinityCastle()
+GameModes["christmasEvent"] := () => GoToRaids()
+GameModes["default"] := () => GoToRaids()
+global currentGameMode := "infinityCastle"
+global maps := [
+    PlanetGreenie(),
+    WalledCity()
+]
 
 SetupMacro() {
     if ControlGetVisible(keybindsGui) {
@@ -93,8 +103,7 @@ InitializeMacro() {
     }
 
     if (ok := FindText(&X, &Y, 746, 476, 862, 569, 0, 0, AreasText)) {
-        ;GoToRaids()
-        GoToInfinityCastle()
+        GameModes[currentGameMode].Call()
     }
     else {
         MsgBox("You must be in the lobby with default camera angle to start the macro.", "Error T3", "+0x1000",)
@@ -121,29 +130,37 @@ BetterClick(x, y, LR := "Left") { ; credits to yuh for this, lowk a life saver
 }
 
 ; By @Durrenth
+;TODO: Find infinity castle button and click it
+; Move player to infinity castle circle
+; Detect latest room and click it
 GoToInfinityCastle() {
     SendInput ("{Tab}")
-    ;TODO: Find infinity castle button and click it
-    ; Move player to infinity castle circle
-    ; Detect latest room and click it
+    exitLoop := 0
+    routingMovement := 1
     loop {
-        ; go to infinity castle
         ; if (ok := FindText(&X, &Y, 10, 70, 350, 205, 0, 0, LoadingScreen)) {
         ;     AddToLog("Found LoadingScreen, stopping loop")
         ;     break
         ; }
-        ; if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
-        ;     AddToLog("Found VoteStart, stopping loop")
-        ;     break
-        ; }
-        ; if (ok := FindText(&X, &Y, 338, 505, 536, 572, 0, 0, ClaimText)) ; daily reward
-        ; {
-        ;     BetterClick(406, 497)
-        ;     Sleep 3000
-        ; }
+        for map in maps {
+            if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, map.MapImage))
+                {
+                  exitLoop :=1
+                }
+        }
 
+        
+        if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
+            AddToLog("Found VoteStart, stopping loop")
+            exitLoop := 1
+        }
+        
+        Sleep 100
 
-        ; go to infinity castle
+        if(routingMovement = false) {
+            continue
+        }
+
         BetterClick(770, 470)
         Sleep 750
         BetterClick(280, 340)
@@ -158,10 +175,53 @@ GoToInfinityCastle() {
         Sleep 2000
         ;BetterClick(430,390) Normal Coords
         BetterClick(425,440)
-        break
+        routingMovement := 0
         ;AntiCaptcha()
-    }
-    Sleep 2000
+        
+    } until (exitLoop)
+    MapPlacementInstructions()
+}
+
+GoToHalloweenEvent(){
+    enteredRoom := 0
+    exitLoop := 0
+    SendInput ("{Tab}")
+    loop {
+
+        for map in maps {
+            if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, map.MapImage))
+                {
+                  exitLoop :=1
+                }
+        }
+
+        if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
+            AddToLog("Found VoteStart, stopping loop")
+            exitLoop := 1
+        }
+
+        Sleep 100
+        
+        if(enteredRoom = true) {
+            continue
+        }
+        
+            BetterClick(89, 302)
+            Sleep 2000
+            SendInput ("{w down}")
+            Sleep 2000
+            SendInput ("{w up}")
+            Sleep 100
+            SendInput ("{a down}")
+            Sleep 5000
+            SendInput ("{a up}")
+            KeyWait "a"
+            Sleep 1200
+            BetterClick(380, 340) ; play (non-matchmaking mode)
+            Sleep 2000
+            enteredRoom :=1
+
+    } until (exitLoop)
     MapPlacementInstructions()
 }
 
@@ -219,11 +279,6 @@ StopMacro() {
 
 DetectMapName() {
 
-    maps := [
-        PlanetGreenie(),
-        WalledCity()
-    ]
-
     for map in maps {
         if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, map.MapImage))
             {
@@ -265,7 +320,7 @@ MapPlacementInstructions() {
     AddToLog("Entering Started Loop")
     StartedLoop()
     AddToLog("Entering On spawn setup")
-    selectedMap.OnSpawnSetupInfinityCastle
+    selectedMap.OnSpawnSetupGlobal
     AddToLog("entering run instructions")
     selectedMap.RunInstructions
     AddToLog("placing units")
@@ -1161,6 +1216,16 @@ ShouldStopUpgrading(sleepamount := 300) {
             Sleep 100
             SendWebhook()
         }
+
+        if (backToLobbyEnabled) {
+            BetterClick(376, 117) ; Back to Lobby
+        } else {
+            BetterClick(540, 117) ; Replay
+            sleep 2000
+            MapPlacementInstructions()
+
+        }
+
         BetterClick(376, 117)
         return true
     }
@@ -1224,7 +1289,10 @@ LoadedLoop() {
             BetterClick(350, 100) ; click yes
             BetterClick(350, 97) ; click yes
             Sleep 200
-            BetterClick(590, 15) ; click on P
+            if(currentGameMode == "christmasEvent" || "default") {
+                BetterClick(590, 15) ; click on P
+            }
+            
             break
         }
         /*else if (ok := FindText(&X, &Y, 694 - 150000, 66 - 150000, 694 + 150000, 66 + 150000, 0, 0, P2))
@@ -1254,7 +1322,9 @@ LoadedLoop() {
                 BetterClick(350, 100) ; click yes
                 BetterClick(350, 97) ; click yes
                 Sleep 200
-                BetterClick(590, 15) ; click on P
+                if(currentGameMode == "christmasEvent" || "default") {
+                    BetterClick(590, 15) ; click on P
+                }
                 break
             }
         }
@@ -1290,7 +1360,12 @@ LobbyLoop() {
         Reconnect()
     }
     AddToLog("Returned to lobby, going back to raids")
-    return GoToRaids()
+
+    if (GameModes.HasKey(currentGameMode)) {
+        return GameModes[currentGameMode].Call()
+    } else {
+        MsgBox("Invalid game mode, or gamemode not found. Send report", "Error T10", "+0x1000",)
+    }
 }
 
 CheckForLobbyButton() {
