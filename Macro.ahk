@@ -50,9 +50,10 @@ CannotPlaceUnitsArr := [CannotPlaceUnit1, CannotPlaceUnit2, CannotPlaceUnit3, Ca
 
 CheckForUpdates()
 
-global backToLobbyEnabled := 0
+global backToLobbyEnabled := 1
 global cardPickerEnabled := 1
 global hasReconnect := 0
+global matchMakingEnabled := 0
 global GameModes := Map()
 GameModes["halloweenEvent"] := () => GoToHalloweenEvent()
 GameModes["infinityCastle"] := () => GoToInfinityCastle()
@@ -134,139 +135,156 @@ BetterClick(x, y, LR := "Left") { ; credits to yuh for this, lowk a life saver
 ; Move player to infinity castle circle
 ; Detect latest room and click it
 GoToInfinityCastle() {
-    SendInput ("{Tab}")
-    exitLoop := 0
-    routingMovement := 1
-    loop {
-        ; if (ok := FindText(&X, &Y, 10, 70, 350, 205, 0, 0, LoadingScreen)) {
-        ;     AddToLog("Found LoadingScreen, stopping loop")
-        ;     break
-        ; }
-        for map in maps {
-            if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, map.MapImage))
-                {
-                  exitLoop :=1
-                }
-        }
-
-        
-        if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
-            AddToLog("Found VoteStart, stopping loop")
-            exitLoop := 1
-        }
-        
-        Sleep 100
-
-        if(routingMovement = false) {
-            continue
-        }
-
-        BetterClick(770, 470)
-        Sleep 750
-        BetterClick(280, 340)
-        Sleep 4000
-        SendInput ("{a down}")
-        ;go to teleporter
-        Sleep 3000
-        SendInput ("{a up}")
-        SendInput ("{w down}")
-        Sleep 600
-        SendInput ("{w up}")
-        Sleep 2000
-        ;BetterClick(430,390) Normal Coords
-        BetterClick(425,440)
-        routingMovement := 0
-        ;AntiCaptcha()
-        
-    } until (exitLoop)
-    MapPlacementInstructions()
+    Loop {
+        SendInput ("{Tab}")
+        exitLoop := 0
+        routingMovement := 1
+        loop {
+            for map in maps {
+                if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, map.MapImage))
+                    {
+                      exitLoop :=1
+                    }
+            }
+    
+            
+            if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
+                AddToLog("Found VoteStart, stopping loop")
+                exitLoop := 1
+            }
+    
+            Sleep 100
+    
+            if(routingMovement == false) {
+                continue
+            }
+    
+            BetterClick(770, 470)
+            Sleep 750
+            BetterClick(280, 340)
+            Sleep 4000
+            SendInput ("{a down}")
+            Sleep 3000
+            SendInput ("{a up}")
+            SendInput ("{w down}")
+            Sleep 600
+            SendInput ("{w up}")
+            Sleep 2000
+            ;BetterClick(430,390) Normal difficulty Coords
+            BetterClick(425,440)
+            routingMovement := 0
+            ;AntiCaptcha()
+            
+        } until (exitLoop) ; end inner loop
+        MapPlacementInstructions()
+        AddToLog("Finished game")
+        LobbyLoop()
+    } ; end outer loop
 }
 
 GoToHalloweenEvent(){
-    enteredRoom := 0
-    exitLoop := 0
-    SendInput ("{Tab}")
     loop {
-
-        for map in maps {
-            if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, map.MapImage))
-                {
-                  exitLoop :=1
-                }
-        }
-
-        if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
-            AddToLog("Found VoteStart, stopping loop")
-            exitLoop := 1
-        }
-
-        Sleep 100
-        
-        if(enteredRoom = true) {
-            continue
-        }
-        
-            BetterClick(89, 302)
-            Sleep 2000
-            SendInput ("{w down}")
-            Sleep 2000
-            SendInput ("{w up}")
+        enteredRoom := 0
+        exitLoop := 0
+        SendInput ("{Tab}")
+        loop {
+    
+            for map in maps {
+                if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, map.MapImage))
+                    {
+                      exitLoop :=1
+                    }
+            }
+    
+            if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
+                AddToLog("Found VoteStart, stopping loop")
+                exitLoop := 1
+            }
+    
             Sleep 100
-            SendInput ("{a down}")
-            Sleep 5000
-            SendInput ("{a up}")
-            KeyWait "a"
-            Sleep 1200
-            BetterClick(380, 340) ; play (non-matchmaking mode)
-            Sleep 2000
-            enteredRoom :=1
+            
+            if(enteredRoom = true) {
+                continue
+            }
+            
+                BetterClick(89, 302)
+                Sleep 2000
+                SendInput ("{w down}")
+                Sleep 2000
+                SendInput ("{w up}")
+                Sleep 100
+                SendInput ("{a down}")
+                Sleep 5000
+                SendInput ("{a up}")
+                KeyWait "a"
+                Sleep 1200
+                if (matchMakingEnabled) {
+                    BetterClick(469, 340) ; play (matchmaking mode)
+                    Sleep 2000
+                    AntiCaptcha()
+                } else {
+                    BetterClick(380, 340) ; play (non-matchmaking mode)
+                    Sleep 2000
+                }
+                Sleep 2000
+                enteredRoom :=1
+    
+        } until (exitLoop) ; end inner loop
 
-    } until (exitLoop)
-    MapPlacementInstructions()
+        MapPlacementInstructions()
+        LobbyLoop()
+    } ; end outer loop
 }
 
 GoToRaids() {
-    SendInput ("{Tab}")
     loop {
-        ; go to xmas map
-        if (ok := FindText(&X, &Y, 10, 70, 350, 205, 0, 0, LoadingScreen)) {
-            AddToLog("Found LoadingScreen, stopping loop")
-            break
-        }
-        if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
-            AddToLog("Found VoteStart, stopping loop")
-            break
-        }
-        if (ok := FindText(&X, &Y, 338, 505, 536, 572, 0, 0, ClaimText)) ; daily reward
-        {
-            BetterClick(406, 497)
-            Sleep 3000
-        }
-
-
-        ; go to xmas map
-
-        BetterClick(89, 302)
-        Sleep 2000
-        SendInput ("{a up}")
-        ; go to teleporter
-        Sleep 100
-        SendInput ("{a down}")
-        Sleep 6000
-        SendInput ("{a up}")
-        KeyWait "a" ; Wait for "d" to be fully processed
-
-        ;sacred planet act 4
-        Sleep 1200
-        BetterClick(469, 340) ; play
-        Sleep 2000
-
-        AntiCaptcha()
-    }
-    LoadedLoop()
-    StartedLoop()
-    OnSpawnSetup()
-    TryPlacingUnits()
+        SendInput ("{Tab}")
+        loop {
+            ; go to xmas map
+            if (ok := FindText(&X, &Y, 10, 70, 350, 205, 0, 0, LoadingScreen)) {
+                AddToLog("Found LoadingScreen, stopping loop")
+                break
+            }
+            if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
+                AddToLog("Found VoteStart, stopping loop")
+                break
+            }
+            if (ok := FindText(&X, &Y, 338, 505, 536, 572, 0, 0, ClaimText)) ; daily reward
+            {
+                BetterClick(406, 497)
+                Sleep 3000
+            }
+    
+            ; go to xmas map
+            BetterClick(89, 302)
+            Sleep 2000
+            SendInput ("{a up}")
+            ; go to teleporter
+            Sleep 100
+            SendInput ("{a down}")
+            Sleep 6000
+            SendInput ("{a up}")
+            KeyWait "a" ; Wait for "d" to be fully processed
+    
+            ;sacred planet act 4
+            Sleep 1200
+            if (matchMakingEnabled) {
+                BetterClick(469, 340) ; play (matchmaking mode)
+                Sleep 2000
+                AntiCaptcha()
+            } else {
+                BetterClick(380, 340) ; play (non-matchmaking mode)
+                Sleep 2000
+            }
+    
+        } ; end inner loop
+        LoadedLoop()
+        StartedLoop()
+        OnSpawnSetup()
+        TryPlacingUnits()
+        AddToLog("Finished game")
+        LobbyLoop()
+    } ; end outer loop
 
 }
 
@@ -291,40 +309,52 @@ DetectMapName() {
 }
 
 MapPlacementInstructions() {
-    mapName := DetectMapName()
-
-    ; Create a Map object
-    mapClasses := Map()
-    mapClasses["PlanetGreenie"] := PlanetGreenie()
-    mapClasses["WalledCity"] := WalledCity()
-    mapClasses["UnknownMap"] := BaseMap()
-
-    AddToLog("Detected mapName: " . mapName) ; Display detected map name
+    loop {
+        AddToLog("Attempting to detect map name...")
+        mapName := DetectMapName()
     
-    ; Loop over mapClasses to find the selected map
-    selectedMap := ""
-    for key, value in mapClasses {
-        if (key = mapName) {
-            selectedMap := value
-            break  ; Exit loop once the map is found
+        ; Create a Map object
+        mapClasses := Map()
+        mapClasses["PlanetGreenie"] := PlanetGreenie()
+        mapClasses["WalledCity"] := WalledCity()
+        mapClasses["UnknownMap"] := BaseMap()
+    
+        AddToLog("Detected mapName: " . mapName) ; Display detected map name
+        
+        ; Loop over mapClasses to find the selected map
+        selectedMap := ""
+        for key, value in mapClasses {
+            if (key = mapName) {
+                selectedMap := value
+                break  ; Exit loop once the map is found
+            }
         }
-    }
-
-    if (selectedMap = "") {
-        AddToLog("UnknownMap")
-        selectedMap := mapClasses["UnknownMap"]
-    }
     
-    ; Run instructions for the selected map
-    LoadedLoop()
-    AddToLog("Entering Started Loop")
-    StartedLoop()
-    AddToLog("Entering On spawn setup")
-    selectedMap.OnSpawnSetupGlobal
-    AddToLog("entering run instructions")
-    selectedMap.RunInstructions
-    AddToLog("placing units")
-    selectedMap.TryPlacingUnits
+        if (selectedMap = "") {
+            AddToLog("UnknownMap")
+            selectedMap := mapClasses["UnknownMap"]
+        }
+        
+        ; Run instructions for the selected map
+        LoadedLoop()
+        AddToLog("Entering Started Loop")
+        StartedLoop()
+        AddToLog("Entering On spawn setup")
+        selectedMap.OnSpawnSetupGlobal
+        AddToLog("entering run instructions")
+        selectedMap.RunInstructions
+        AddToLog("placing units")
+        selectedMap.TryPlacingUnits
+        AddToLog("returned to MapPlacemenInstructions")
+
+        if !(backToLobbyEnabled) {
+            continue
+        } 
+
+        break ; break out of loop if replaying is disabled.
+
+    }
+    return ; return to GoToGamemode function
 }
 
 
@@ -479,8 +509,8 @@ SpiralPlacement(gridPlacement := false) {
                 BetterClick(348, 391) ; next
                 BetterClick(565, 563) ; move mouse
                 if ShouldStopUpgrading(1) {
-                    AddToLog("Stopping due to finding lobby  condition.")
-                    return LobbyLoop()
+                    AddToLog("Stopping due to finding lobby condition. Returning from SpirePlacement")
+                    return ; Go back to MapPlacementInstructions or TryPlacingUnits
                 }
                 Reconnect()
 
@@ -512,8 +542,8 @@ SpiralPlacement(gridPlacement := false) {
 
             dirIndex := Mod(dirIndex + 1, 4)
             if ShouldStopUpgrading(1) {
-                AddToLog("Stopping due to lobby condition.")
-                return LobbyLoop()
+                AddToLog("Stopping due to finding lobby condition. Returning from SpirePlacement")
+                return ; Go back to MapPlacementInstructions or TryPlacingUnits
             }
         }
 
@@ -521,8 +551,8 @@ SpiralPlacement(gridPlacement := false) {
     }
 
     UpgradeUnits()
-
-    AddToLog("All slot placements and upgrades completed.")
+    AddToLog("Returned from UpgradeUnits.")
+    return ; Go back to MapPlacementInstructions or TryPlacingUnits
 }
 
 ; The OG placement by @Original author of macro
@@ -592,8 +622,8 @@ LinePlacement() {
                 BetterClick(348, 391) ; next
                 BetterClick(565, 563) ; move mouse
                 if ShouldStopUpgrading(1) {
-                    AddToLog("Stopping due to finding lobby  condition.")
-                    return LobbyLoop()
+                    AddToLog("Stopping due to finding lobby condition. Returning from LinePlaceMent")
+                    return ; Go back to MapPlacementInstructions or TryPlacingUnits
                 }
                 Reconnect()
                 x += step - 20 ; Move to the next column
@@ -617,8 +647,8 @@ LinePlacement() {
     }
 
     UpgradeUnits()
-
-    AddToLog("All slot placements and upgrades completed.")
+    AddToLog("Returned from UpgradeUnits.")
+    return ; Go back to MapPlacementInstructions or TryPlacingUnits
 }
 
 ; Modified version of LinePlaceMent, placing in a 2x2 grid when a unit is placed,then goes back to line placing
@@ -721,8 +751,8 @@ LinePlacementGrid() {
                 BetterClick(348, 391) ; next
                 BetterClick(565, 563) ; move mouse
                 if ShouldStopUpgrading(1) {
-                    AddToLog("Stopping due to finding lobby  condition.")
-                    return LobbyLoop()
+                    AddToLog("Stopping due to finding lobby condition. Returning from LinePlacementGrid")
+                    return ; Go back to MapPlacementInstructions or TryPlacingUnits
                 }
                 Reconnect()
                 x += step - 20 ; Move to the next column
@@ -746,8 +776,8 @@ LinePlacementGrid() {
     }
 
     UpgradeUnits()
-
-    AddToLog("All slot placements and upgrades completed.")
+    AddToLog("Returned from UpgradeUnits.")
+    return ; Go back to MapPlacementInstructions or TryPlacingUnits
 }
 
 ; Places units in a zig-zag pattern
@@ -812,7 +842,9 @@ ZigZagPlacement(gridPlacement := false) {
                 }
 
                 if (gridPlacement) {
-                    PlaceInGrid(x, y, slotNum, &placementCount, &successfulCoordinates, &savedPlacements, &placements)
+                    if(PlaceInGrid(x, y, slotNum, &placementCount, &successfulCoordinates, &savedPlacements, &placements)) {
+                        return
+                    }
                 }
 
             }
@@ -834,8 +866,8 @@ ZigZagPlacement(gridPlacement := false) {
             BetterClick(348, 391) ; next
             BetterClick(565, 563) ; move mouse
             if ShouldStopUpgrading(1) {
-                AddToLog("Stopping due to finding lobby  condition.")
-                return LobbyLoop()
+                AddToLog("Stopping due to finding lobby condition. Returning from ZigZagPlacement")
+                return ; Go back to MapPlacementInstructions or TryPlacingUnits
             }
             Reconnect()
             
@@ -876,7 +908,8 @@ ZigZagPlacement(gridPlacement := false) {
         Reconnect()
     } ; End For
     UpgradeUnits()
-    AddToLog("All slot placements and upgrades completed.")
+    AddToLog("Returned from UpgradeUnits.")
+    return ; Go back to MapPlacementInstructions or TryPlacingUnits
 }
 
 ; Algorithm that's used in LinePlacement. Is a helper function. Attempts to place units in a 2x2 grid once an initial unit has been placed.
@@ -915,7 +948,7 @@ PlaceInGrid(startX, startY, slotNum, & placementCount, & successfulCoordinates, 
        BetterClick(565, 563) ; move mouse
        if ShouldStopUpgrading(1) {
            AddToLog("Stopping due to finding lobby condition.")
-           return LobbyLoop()
+           return true ;Go back to Placement Types
        }
        Reconnect()
 
@@ -941,7 +974,7 @@ PlaceInGrid(startX, startY, slotNum, & placementCount, & successfulCoordinates, 
        }
 
    } ; End for
-
+   return false
 }
 
 ; Add placement options here
@@ -962,6 +995,7 @@ TryPlacingUnits() {
         default:
             AddToLog("Invalid selection")
     }
+    return ; Go back to Gamemodes
 }
 
 IsMaxed(coord) {
@@ -1000,10 +1034,10 @@ UpgradeUnits() {
                     break
                 }
                 if ShouldStopUpgrading() {
-                    AddToLog("Found return to lobby, going back.")
+                    AddToLog("Stopping due to finding return to lobby/replay button.")
                     successfulCoordinates := []
                     maxedCoordinates := []
-                    return LobbyLoop()
+                    return ; return to calling PlacementFunction
                 }
 
                 Sleep(200)
@@ -1038,7 +1072,8 @@ UpgradeUnits() {
             }
         }
 
-        return LobbyLoop()
+        return ; return to calling PlacementFunction
+
     }
     else
     {
@@ -1053,10 +1088,10 @@ UpgradeUnits() {
                 UpgradeUnit(coord.x, coord.y)
 
                 if ShouldStopUpgrading() {
-                    AddToLog("Found return to lobby, going back.")
+                    AddToLog("Stopping due to finding return to lobby/replay button.")
                     successfulCoordinates := []
                     maxedCoordinates := []
-                    return LobbyLoop()
+                    return ; return to calling PlacementFunction
                 }
 
                 if IsMaxUpgrade() {
@@ -1093,15 +1128,15 @@ UpgradeUnits() {
                 }
                 BetterClick(348, 391) ; next
                 if ShouldStopUpgrading() {
-                    AddToLog("Stopping due to finding return to lobby button.")
-                    return LobbyLoop()
+                    AddToLog("Stopping due to finding return to lobby/replay button.")
+                    return ; return to calling PlacementFunction
                 }
                 Sleep(2000) ; Prevent excessive looping
 
             }
 
             Reconnect()
-        }
+        } ; End While
     }
 }
 
@@ -1210,6 +1245,7 @@ IsMaxUpgrade() {
 
 ShouldStopUpgrading(sleepamount := 300) {
     Sleep sleepamount
+
     if CheckForLobbyButton() {
         if (WebhookCheckbox.Value = 1) {
             SendInput ("{Tab}")
@@ -1221,14 +1257,12 @@ ShouldStopUpgrading(sleepamount := 300) {
             BetterClick(376, 117) ; Back to Lobby
         } else {
             BetterClick(540, 117) ; Replay
-            sleep 2000
-            MapPlacementInstructions()
-
         }
 
-        BetterClick(376, 117)
+        AddToLog("Should Stop Upgrading returned true")
         return true
     }
+
 }
 
 FindAndClickColor(targetColor := 0x006783, searchArea := [0, 0, A_ScreenWidth, A_ScreenHeight]) {
@@ -1359,13 +1393,8 @@ LobbyLoop() {
         }
         Reconnect()
     }
-    AddToLog("Returned to lobby, going back to raids")
-
-    if (GameModes.HasKey(currentGameMode)) {
-        return GameModes[currentGameMode].Call()
-    } else {
-        MsgBox("Invalid game mode, or gamemode not found. Send report", "Error T10", "+0x1000",)
-    }
+    AddToLog("Returning to lobby, going back to gamemode")
+    return
 }
 
 CheckForLobbyButton() {
