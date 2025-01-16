@@ -1,5 +1,5 @@
 #Requires AutoHotkey v2.0
-; #Include %A_ScriptDir%\Macro.ahk
+#Include %A_ScriptDir%\Macro.ahk
 
 class BaseMap {
 
@@ -68,6 +68,12 @@ class SnowyTown extends BaseMap {
         SpiralPlacement(true)
     }
 
+    RunInstructions() {
+        this.HoldKey("D", 3680)
+        this.HoldKey("W", 2500)
+        this.HoldKey("D", 2650)
+    }
+
 }
 
 class SandVillage extends BaseMap {
@@ -121,6 +127,12 @@ class AntKingdom extends BaseMap {
         SpiralPlacement(true)
     }
 
+    RunInstructions() {
+        this.HoldKey("A", 2050)
+        this.HoldKey("S", 5000)
+        this.HoldKey("A", 1750)
+    }
+
 }
 
 class MagicTown extends BaseMap {
@@ -130,6 +142,12 @@ class MagicTown extends BaseMap {
 
     TryPlacingUnits() {
         SpiralPlacement(true)
+    }
+
+    RunInstructions() {
+        this.HoldKey("D", 3500)
+        this.HoldKey("S", 1300)
+        this.HoldKey("D", 4000)
     }
 
 }
@@ -153,6 +171,17 @@ class MagicHills extends BaseMap {
     TryPlacingUnits() {
         SpiralPlacement(true)
     }
+
+     RunInstructions() {
+        this.HoldKey("A", 2000) ; Enter values here
+        this.HoldKey("W", 800)
+        this.HoldKey("A", 5000)
+        this.HoldKey("S", 1700)
+        this.HoldKey("A", 3250)
+        this.HoldKey("W", 3200)
+        this.HoldKey("A", 2500)
+    }
+
 
 }
 
@@ -251,6 +280,11 @@ class MountainTemple extends BaseMap {
 
     TryPlacingUnits() {
         SpiralPlacement(true)
+    }
+
+    RunInstructions() {
+        this.HoldKey("A", 1450)
+        this.HoldKey("S", 1300)
     }
 
 }

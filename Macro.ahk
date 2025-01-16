@@ -50,19 +50,41 @@ CannotPlaceUnitsArr := [CannotPlaceUnit1, CannotPlaceUnit2, CannotPlaceUnit3, Ca
 
 CheckForUpdates()
 
-global backToLobbyEnabled := 1
+global backToLobbyEnabled := 0
 global cardPickerEnabled := 1
 global hasReconnect := 0
 global matchMakingEnabled := 0
+
+; Add other gamemodes here
 global GameModes := Map()
-GameModes["halloweenEvent"] := () => GoToHalloweenEvent()
+GameModes["halloweenEvent"] := () => GoToHalloweenEvent() ;Add GoToHalloween gamemode here. If you need help with it dm me on disc @Durrenth (I made my own)
 GameModes["infinityCastle"] := () => GoToInfinityCastle()
 GameModes["christmasEvent"] := () => GoToRaids()
 GameModes["default"] := () => GoToRaids()
-global currentGameMode := "infinityCastle"
-global maps := [
-    PlanetGreenie(),
-    WalledCity()
+global currentGameMode := "halloweenEvent"
+
+; This stores all the maps in the entire game. CHeck Maps.ahk for more info (uses OOP)
+global storyMaps := [
+    MountainTemple(),
+    SnowyTown(),
+    AntKingdom(),
+    MagicTown(),
+    MagicHills(),
+    ; PlanetGreenie(),
+    ; SandVillage(),
+    ; NavyBay(),
+    ; FiendCity(),
+    ; SpiritWorld(),
+    ; HauntedAcademy(),
+    ; SpaceCenter(),
+    ; AlienSpaceship(),
+    ; FabledKingdom(),
+    ; RuinedCity()
+    ; PuppetIsland(),
+    ; VirtualDungeon(),
+    ; SnowyKingdom(),
+    ; DungeonThrone(),
+    ; RainVillage()
 ]
 
 SetupMacro() {
@@ -102,7 +124,7 @@ InitializeMacro() {
         MsgBox("You must have ROBLOX open in order to start the macro (microsoft roblox doesnt work)", "Error T4", "+0x1000",)
         return
     }
-
+    ; Checks the current gamemode thats set and calls the function
     if (ok := FindText(&X, &Y, 746, 476, 862, 569, 0, 0, AreasText)) {
         GameModes[currentGameMode].Call()
     }
@@ -131,32 +153,24 @@ BetterClick(x, y, LR := "Left") { ; credits to yuh for this, lowk a life saver
 }
 
 ; By @Durrenth
-;TODO: Find infinity castle button and click it
-; Move player to infinity castle circle
-; Detect latest room and click it
+; Infinity castle macro
 GoToInfinityCastle() {
     Loop {
+        mapName := "UnknownMap"
         SendInput ("{Tab}")
-        exitLoop := 0
-        routingMovement := 1
+        enteringMap := false
         loop {
-            for map in maps {
-                if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, map.MapImage))
-                    {
-                      exitLoop :=1
-                    }
+
+            ; Attempts to detect the map name. If it doesn't find any, the default mapName is "UnkownMap"
+            if (enteringMap) {
+                mapName := DetectMapName()
+                break
             }
     
-            
+            ; Prevention in case attempting to find the map doesn't work
             if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
                 AddToLog("Found VoteStart, stopping loop")
-                exitLoop := 1
-            }
-    
-            Sleep 100
-    
-            if(routingMovement == false) {
-                continue
+                break
             }
     
             BetterClick(770, 470)
@@ -172,30 +186,40 @@ GoToInfinityCastle() {
             Sleep 2000
             ;BetterClick(430,390) Normal difficulty Coords
             BetterClick(425,440)
-            routingMovement := 0
+            Sleep 1000
+            enteringMap := true
             ;AntiCaptcha()
             
-        } until (exitLoop) ; end inner loop
-        MapPlacementInstructions()
+        }
+        ; Go to MapPlacementInstructions with the map that was found in the for loop. It is our first time calling, so true.
+        MapPlacementInstructions(mapName, true)
         AddToLog("Finished game")
-        LobbyLoop()
+        LobbyLoop() ; If replay is disable, then enter LobbyLoop. Once lobby is found, begin this entire loop again
     } ; end outer loop
 }
 
 GoToHalloweenEvent(){
     loop {
+        mapName := "UnknownMap"
+        SendInput ("{Tab}")
+        enteringMap := false
         enteredRoom := 0
         exitLoop := 0
-        SendInput ("{Tab}")
         loop {
     
-            for map in maps {
-                if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, map.MapImage))
-                    {
-                      exitLoop :=1
+            ; Attempts to detect the map name. If it doesn't find any, the default mapName is "UnkownMap"
+            if (enteringMap) {
+                for map in storyMaps {
+                    if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, map.MapImage))
+                        {
+                            mapName := map.Name  ; Save the detected map name  
+                            break ; break for loop
+                        }
                     }
             }
-    
+            ; I opted to use loop until because there's roughly 30 or so seconds when you are waiting in the room if not match making.
+            ; because of this I need to do the for loop above all over again to constantly check the loading screen.
+            ; only when the votestart is detected will the loop exit
             if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
                 AddToLog("Found VoteStart, stopping loop")
                 exitLoop := 1
@@ -228,17 +252,19 @@ GoToHalloweenEvent(){
                 }
                 Sleep 2000
                 enteredRoom :=1
+                enteringMap := true
     
         } until (exitLoop) ; end inner loop
 
-        MapPlacementInstructions()
-        LobbyLoop()
+        MapPlacementInstructions(mapName, true)
+        LobbyLoop() ; if not replaying
     } ; end outer loop
 }
 
 GoToRaids() {
     loop {
         SendInput ("{Tab}")
+        enteredRoom := 0
         loop {
             ; go to xmas map
             if (ok := FindText(&X, &Y, 10, 70, 350, 205, 0, 0, LoadingScreen)) {
@@ -253,6 +279,10 @@ GoToRaids() {
             {
                 BetterClick(406, 497)
                 Sleep 3000
+            }
+
+            if(enteredRoom) {
+                continue
             }
     
             ; go to xmas map
@@ -274,16 +304,25 @@ GoToRaids() {
                 AntiCaptcha()
             } else {
                 BetterClick(380, 340) ; play (non-matchmaking mode)
-                Sleep 2000
+                Sleep 1000
+                enteredRoom := 1
             }
+            Sleep 2000
     
         } ; end inner loop
-        LoadedLoop()
-        StartedLoop()
-        OnSpawnSetup()
-        TryPlacingUnits()
-        AddToLog("Finished game")
-        LobbyLoop()
+        loop { ; this loop is here incase the user replays
+            LoadedLoop()
+            StartedLoop()
+            OnSpawnSetup()
+            TryPlacingUnits()
+            if !(backToLobbyEnabled) {
+                AddToLog("Finished game, replaying")
+                continue
+            }
+            AddToLog("Finished game, returning to lobby")
+            LobbyLoop()
+            break
+        }
     } ; end outer loop
 
 }
@@ -295,29 +334,53 @@ StopMacro() {
     Reload()
 }
 
+; This function here is needed for MapPlacementInstructions in case the user decides
+; to select the ability to replay instead of go to lobby
 DetectMapName() {
-
-    for map in maps {
+    for map in storyMaps {
         if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, map.MapImage))
             {
               return map.Name
             }
     }
-
     return "UnknownMap"
-
 }
 
-MapPlacementInstructions() {
+MapPlacementInstructions(mapName, firstTimeCalling) {
     loop {
-        AddToLog("Attempting to detect map name...")
-        mapName := DetectMapName()
+        ; If it's the first time calling MapPlacement, then DetectMapName() has more than likely already been done.
+        ; This if statement is to reduce redundancy so you don't do the equivelent of DetectMapName all over again.
+        ; This is needed because if a user selects the option of Replay instead of go to lobby (for gamemodes like infinity castle),
+        ; It can detect the map name here again, rather then going back to the "GoToGameMode" functions
+        if !(firstTimeCalling) {
+            AddToLog("Attempting to detect map name...")
+            mapName := DetectMapName()
+        }
+        AddToLog("Using detected map name: " mapName)
     
         ; Create a Map object
         mapClasses := Map()
-        mapClasses["PlanetGreenie"] := PlanetGreenie()
-        mapClasses["WalledCity"] := WalledCity()
         mapClasses["UnknownMap"] := BaseMap()
+        mapClasses["MountainTemple"] := MountainTemple() ; *
+        mapClasses["SnowyTown"] := SnowyTown() ; *
+        mapClasses["AntKingdom"] := AntKingdom() ; *
+        mapClasses["MagicTown"] := MagicTown() ; *
+        mapClasses["MagicHills"] := MagicHills() ; *
+        ;mapClasses["SandVillage"] := SandVillage() ; **
+        ; mapClasses["HauntedAcademy"] := HauntedAcademy() ; **
+        ; mapClasses["SpaceCenter"] := SpaceCenter() ; **
+        ; mapClasses["NavyBay"] := NavyBay()
+        ; mapClasses["FiendCity"] := FiendCity()
+        ; mapClasses["SpiritWorld"] := SpiritWorld()
+        ; mapClasses["AlienSpaceship"] := AlienSpaceship()
+        ; mapClasses["FabledKingdom"] := FabledKingdom()
+        ; mapClasses["RuinedCity"] := RuinedCity()
+        ; mapClasses["PuppetIsland"] := PuppetIsland()
+        ; mapClasses["VirtualDungeon"] := VirtualDungeon()
+        ; mapClasses["SnowyKingdom"] := SnowyKingdom()
+        ; mapClasses["DungeonThrone"] := DungeonThrone()
+        ; mapClasses["PlanetGreenie"] := PlanetGreenie()
+        ; mapClasses["RainVillage"] := RainVillage()
     
         AddToLog("Detected mapName: " . mapName) ; Display detected map name
         
@@ -346,6 +409,7 @@ MapPlacementInstructions() {
         AddToLog("placing units")
         selectedMap.TryPlacingUnits
         AddToLog("returned to MapPlacemenInstructions")
+        firstTimeCalling := false
 
         if !(backToLobbyEnabled) {
             continue
@@ -354,7 +418,7 @@ MapPlacementInstructions() {
         break ; break out of loop if replaying is disabled.
 
     }
-    return ; return to GoToGamemode function
+    return ; return to GoToGamemode functions
 }
 
 
@@ -399,7 +463,7 @@ IsPlacementSuccessful() {
 
 CannotPlaceUnits() {
     global CannotPlaceUnitsArr ; Pretty sure this line here isin't needed but it works so I'm leaving it
-    AddToLog("Entered Cannot Place Units")
+    ;AddToLog("Entered Cannot Place Units")
     for index, placementAmount in CannotPlaceUnitsArr {
         if (ok := FindText(&X, &Y, 154, 478, 700, 531, 0, 0, placementAmount)) {
             return true
@@ -509,7 +573,7 @@ SpiralPlacement(gridPlacement := false) {
                 BetterClick(348, 391) ; next
                 BetterClick(565, 563) ; move mouse
                 if ShouldStopUpgrading(1) {
-                    AddToLog("Stopping due to finding lobby condition. Returning from SpirePlacement")
+                    AddToLog("Stopping due to finding lobby condition. Returning from SpiralPlacement")
                     return ; Go back to MapPlacementInstructions or TryPlacingUnits
                 }
                 Reconnect()
@@ -751,7 +815,7 @@ LinePlacementGrid() {
                 BetterClick(348, 391) ; next
                 BetterClick(565, 563) ; move mouse
                 if ShouldStopUpgrading(1) {
-                    AddToLog("Stopping due to finding lobby condition. Returning from LinePlacementGrid")
+                    AddToLog("Stopping due to finding lobby condition. Returning from LinePlacement")
                     return ; Go back to MapPlacementInstructions or TryPlacingUnits
                 }
                 Reconnect()
