@@ -61,7 +61,7 @@ GameModes["halloweenEvent"] := () => GoToHalloweenEvent() ;Add GoToHalloween gam
 GameModes["infinityCastle"] := () => GoToInfinityCastle()
 GameModes["christmasEvent"] := () => GoToRaids()
 GameModes["default"] := () => GoToRaids()
-global currentGameMode := "halloweenEvent"
+global currentGameMode := "infinityCastle"
 
 ; This stores all the maps in the entire game. CHeck Maps.ahk for more info (uses OOP)
 global storyMaps := [
@@ -186,7 +186,7 @@ GoToInfinityCastle() {
             Sleep 2000
             ;BetterClick(430,390) Normal difficulty Coords
             BetterClick(425,440)
-            Sleep 1000
+            Sleep 2000
             enteringMap := true
             ;AntiCaptcha()
             
@@ -203,6 +203,7 @@ GoToHalloweenEvent(){
         mapName := "UnknownMap"
         SendInput ("{Tab}")
         enteringMap := false
+        captchaSolved := false
         enteredRoom := 0
         exitLoop := 0
         loop {
@@ -227,7 +228,7 @@ GoToHalloweenEvent(){
     
             Sleep 100
             
-            if(enteredRoom = true) {
+            if(enteredRoom = true && backToLobbyEnabled == false || captchaSolved == true) {
                 continue
             }
             
@@ -245,14 +246,22 @@ GoToHalloweenEvent(){
                 if (matchMakingEnabled) {
                     BetterClick(469, 340) ; play (matchmaking mode)
                     Sleep 2000
-                    AntiCaptcha()
+                    captchaSolved := AntiCaptcha()
+                    AddToLog("returned from anti captcha")
+                    if (captchaSolved == true) {
+                        enteringMap := true
+                    } else {
+                        Sleep 30000
+                    }
                 } else {
                     BetterClick(380, 340) ; play (non-matchmaking mode)
                     Sleep 2000
                 }
                 Sleep 2000
                 enteredRoom :=1
-                enteringMap := true
+                if !(matchMakingEnabled) {
+                    enteringMap := true
+                }
     
         } until (exitLoop) ; end inner loop
 
@@ -354,6 +363,7 @@ MapPlacementInstructions(mapName, firstTimeCalling) {
         ; It can detect the map name here again, rather then going back to the "GoToGameMode" functions
         if !(firstTimeCalling) {
             AddToLog("Attempting to detect map name...")
+            Sleep 2300
             mapName := DetectMapName()
         }
         AddToLog("Using detected map name: " mapName)
@@ -463,9 +473,9 @@ IsPlacementSuccessful() {
 
 CannotPlaceUnits() {
     global CannotPlaceUnitsArr ; Pretty sure this line here isin't needed but it works so I'm leaving it
-    ;AddToLog("Entered Cannot Place Units")
     for index, placementAmount in CannotPlaceUnitsArr {
         if (ok := FindText(&X, &Y, 154, 478, 700, 531, 0, 0, placementAmount)) {
+            AddToLog("Found could not place unit")
             return true
         }
     }
@@ -511,6 +521,7 @@ SpiralPlacement(gridPlacement := false) {
     dirIndex := 0
     directionCount := 0
 
+    
     ; Iterate through all slots (1 to 6)
     for slotNum in [1, 2, 3, 4, 5, 6] {
         enabled := "Enabled" slotNum
@@ -519,24 +530,28 @@ SpiralPlacement(gridPlacement := false) {
         placements := "Placement" slotNum
         placements := %placements%
         placements := placements.Text
-
+        
         ; Skip if the slot is not enabled
         if !(enabled = 1) {
             continue
         }
-
+        
         AddToLog("Starting placements for Slot " slotNum " with " placements " placements.")
-
+        
         placementCount := 0
         currentX := centerX
         currentY := centerY
         steps := 30
         maxSteps := 5
-
+        exitLoops := false
+        
         while (placementCount < placements) {
+            if (exitLoops) {
+                break
+            }
             for index, stepSize in [steps] {
-
                 if PlaceUnit(currentX, currentY, slotNum) {
+                    AddToLog("Trying to plce unit")
                     placementCount++
                     successfulCoordinates.Push({ x: currentX, y: currentY, slot: "slot_" slotNum }) ; Track successful placements
                     try {
@@ -558,6 +573,7 @@ SpiralPlacement(gridPlacement := false) {
                 }
 
                 if(CannotPlaceUnits()) {
+                    exitLoops := true ; Set flag to break out of all loops
                     break
                 }
 
@@ -629,6 +645,7 @@ LinePlacement() {
     y := startY ; Initialize y only once
     y2 := startY2 ; Initialize y2 only once
 
+    
     ; Iterate through all slots (1 to 6)
     for slotNum in [1, 2, 3, 4, 5, 6] {
         enabled := "Enabled" slotNum
@@ -637,19 +654,23 @@ LinePlacement() {
         placements := "Placement" slotNum
         placements := %placements%
         placements := placements.Text
-
+        
         ; Skip if the slot is not enabled
         if !(enabled = 1) {
             continue
         }
-
+        
         AddToLog("Starting placements for Slot " slotNum " with " placements " placements.")
-
+        
         placementCount := 0
         alternatingPlacement := 0
+        exitLoops := false
 
         ; Continue placement for the current slot
         while (placementCount < placements && y >= endY && y2 <= endY2) { ; Rows
+            if(exitLoops) {
+                break
+            }
             while (placementCount < placements && x <= endX) { ; Columns
                 if (alternatingPlacement == 0) {
                     if PlaceUnit(x, y2, slotNum) {
@@ -659,6 +680,7 @@ LinePlacement() {
                 }
 
                 if(CannotPlaceUnits()) {
+                    exitLoops := true ; Set flag to break out of all loops
                     break
                 }
 
@@ -670,6 +692,7 @@ LinePlacement() {
                 }
 
                 if(CannotPlaceUnits()) {
+                    exitLoops := true ; Set flag to break out of all loops
                     break
                 }
 
@@ -722,11 +745,11 @@ LinePlacementGrid() {
     successfulCoordinates := [] ; Reset successfulCoordinates for each run
     maxedCoordinates := []
     savedPlacements := Map()
-
     x := startX ; Initialize x only once
     y := startY ; Initialize y only once
     y2 := startY2 ; Initialize y2 only once
 
+    
     ; Iterate through all slots (1 to 6)
     for slotNum in [1, 2, 3, 4, 5, 6] {
         enabled := "Enabled" slotNum
@@ -735,16 +758,17 @@ LinePlacementGrid() {
         placements := "Placement" slotNum
         placements := %placements%
         placements := placements.Text
-
+        
         ; Skip if the slot is not enabled
         if !(enabled = 1) {
             continue
         }
-
+        
         AddToLog("Starting placements for Slot " slotNum " with " placements " placements.")
-
+        
         placementCount := 0
         alternatingPlacement := 0
+        exitLoops := false
 
         ; Continue placement for the current slot
         while (placementCount < placements && y >= endY && y2 <= endY2) { ; Rows
@@ -771,6 +795,7 @@ LinePlacementGrid() {
                     }
 
                     if(CannotPlaceUnits()) {
+                        exitLoops := true ; Set flag to break out of all loops
                         break
                     }
                     
@@ -798,6 +823,7 @@ LinePlacementGrid() {
                     }
 
                     if(CannotPlaceUnits()) {
+                        exitLoops := true ; Set flag to break out of all loops
                         break
                     }
 
@@ -992,7 +1018,6 @@ PlaceInGrid(startX, startY, slotNum, & placementCount, & successfulCoordinates, 
        [30, 30]   ; Row 1, Column 1
    ]
    for index, offset in gridOffsets {
-
        ; Adds the value that's stored in the array at the current index to either x or y's starting location 
        gridX := startX + offset[2] ; Move horizontally by 'step' from the initial start location
        gridY := startY + offset[1] ; Move vertically by 'step' from the initial start location
@@ -1016,26 +1041,27 @@ PlaceInGrid(startX, startY, slotNum, & placementCount, & successfulCoordinates, 
        }
        Reconnect()
 
-       if PlaceUnit(gridX, gridY, slotNum) {
-           placementCount++ ; Increment the placement count
-           successfulCoordinates.Push({ x: gridX, y: gridY, slot: "slot_" slotNum }) ; Track the placement
-           ;AddToLog("Placed unit at (" gridX ", " gridY ") in 2x2 grid.")
+        if PlaceUnit(gridX, gridY, slotNum) {
+            placementCount++ ; Increment the placement count
+            successfulCoordinates.Push({ x: gridX, y: gridY, slot: "slot_" slotNum }) ; Track the placement
+            AddToLog("Placed unit at (" gridX ", " gridY ") in 2x2 grid.")
+            
+            ; Update or initialize saved placements for the current slot
+            try {
+                if savedPlacements.Get("slot_" slotNum) {
+                    savedPlacements.Set("slot_" slotNum, savedPlacements.Get("slot_" slotNum) + 1)
+                }
+            } catch {
+                savedPlacements.Set("slot_" slotNum, 1)
+            }
 
-           ; Update or initialize saved placements for the current slot
-           try {
-               if savedPlacements.Get("slot_" slotNum) {
-                   savedPlacements.Set("slot_" slotNum, savedPlacements.Get("slot_" slotNum) + 1)
-               }
-           } catch {
-               savedPlacements.Set("slot_" slotNum, 1)
-           }
+            ; Check if placement limit is reached
+            if placementCount >= placements {
+                break
+            }
 
-           ; Check if placement limit is reached
-           if placementCount >= placements {
-               break
-           }
 
-       }
+        }
 
    } ; End for
    return false
@@ -1546,7 +1572,7 @@ AntiCaptcha() {
         if (StrLen(captcha) <= 1 || RegExMatch(captcha, "[A-Za-z]")) {
             AddToLog("invalid captcha retrying")
             BetterClick(584, 192) ; close captcha
-            return
+            return false
         }
 
         ; Remove special characters like /, -, and .
@@ -1560,12 +1586,15 @@ AntiCaptcha() {
         ;}
     } else {
         AddToLog("NO CAPTCHA FOUND.")
+        return false
     }
-
     BetterClick(309, 386) ; select
     Sleep 1500
     BetterClick(383, 221)
     Sleep 500
+    if (currentGameMode == "halloweenEvent") {
+        return true
+    }
 
     sleep 6000
     if (ok := FindText(&X, &Y, 10, 70, 350, 205, 0, 0, LoadingScreen)) {
