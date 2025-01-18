@@ -50,10 +50,10 @@ CannotPlaceUnitsArr := [CannotPlaceUnit1, CannotPlaceUnit2, CannotPlaceUnit3, Ca
 
 CheckForUpdates()
 
-global backToLobbyEnabled := 0
+global backToLobbyEnabled := 1
 global cardPickerEnabled := 1
 global hasReconnect := 0
-global matchMakingEnabled := 0
+global matchMakingEnabled := 1
 
 ; Add other gamemodes here
 global GameModes := Map()
@@ -61,7 +61,7 @@ GameModes["halloweenEvent"] := () => GoToHalloweenEvent() ;Add GoToHalloween gam
 GameModes["infinityCastle"] := () => GoToInfinityCastle()
 GameModes["christmasEvent"] := () => GoToRaids()
 GameModes["default"] := () => GoToRaids()
-global currentGameMode := "infinityCastle"
+global currentGameMode := "christmasEvent"
 
 ; This stores all the maps in the entire game. CHeck Maps.ahk for more info (uses OOP)
 global storyMaps := [
