@@ -50,21 +50,25 @@ CannotPlaceUnitsArr := [CannotPlaceUnit1, CannotPlaceUnit2, CannotPlaceUnit3, Ca
 
 CheckForUpdates()
 
-global backToLobbyEnabled := 1
 global cardPickerEnabled := 1
 global hasReconnect := 0
-global matchMakingEnabled := 1
+global matchMakingEnabled := 0
+global backToLobbyEnabled := 0
 
 ; Add other gamemodes here
 global GameModes := Map()
 GameModes["halloweenEvent"] := () => GoToHalloweenEvent() ;Add GoToHalloween gamemode here. If you need help with it dm me on disc @Durrenth (I made my own)
 GameModes["infinityCastle"] := () => GoToInfinityCastle()
 GameModes["christmasEvent"] := () => GoToRaids()
+GameModes["magicHillsLegend1"] := () => GoToLegendStage(730, 245, 300, 240, "MagicHills")
+GameModes["magicHillsLegend2"] := () => GoToLegendStage(730, 245, 300, 270, "MagicHills")
+GameModes["magicHillsLegend3"] := () => GoToLegendStage(730, 245, 300, 305, "MagicHills")
 GameModes["default"] := () => GoToRaids()
-global currentGameMode := "christmasEvent"
+global currentGameMode := "default"
 
 ; This stores all the maps in the entire game. CHeck Maps.ahk for more info (uses OOP)
 global storyMaps := [
+    DungeonThrone(),
     MountainTemple(),
     SnowyTown(),
     AntKingdom(),
@@ -83,7 +87,6 @@ global storyMaps := [
     ; PuppetIsland(),
     ; VirtualDungeon(),
     ; SnowyKingdom(),
-    ; DungeonThrone(),
     ; RainVillage()
 ]
 
@@ -126,6 +129,25 @@ InitializeMacro() {
     }
     ; Checks the current gamemode thats set and calls the function
     if (ok := FindText(&X, &Y, 746, 476, 862, 569, 0, 0, AreasText)) {
+        ; Use dropdown selection to set the current gamemode
+        switch GamemodeDropdown.Text {
+            case "Infinity Castle":
+                currentGameMode := "infinityCastle"
+            case "Halloween Event":
+                currentGameMode := "halloweenEvent"
+            case "Christmas Event":
+                currentGameMode := "christmasEvent"
+            case "Magic Hills Legend 1":
+                currentGameMode := "magicHillsLegend1"
+            case "Magic Hills Legend 2":
+                currentGameMode := "magicHillsLegend2"
+            case "Magic Hills Legend 3":
+                currentGameMode := "magicHillsLegend3"
+            default:
+                MsgBox("Invalid gamemode selection for some reason. Pls report k thx bye", "Error")
+                return
+        }
+        ; Call the corresponding function for the current gamemode
         GameModes[currentGameMode].Call()
     }
     else {
@@ -158,6 +180,7 @@ GoToInfinityCastle() {
     Loop {
         mapName := "UnknownMap"
         SendInput ("{Tab}")
+        randomMapDetection := true
         enteringMap := false
         loop {
 
@@ -186,13 +209,13 @@ GoToInfinityCastle() {
             Sleep 2000
             ;BetterClick(430,390) Normal difficulty Coords
             BetterClick(425,440)
-            Sleep 2000
+            Sleep 4000
             enteringMap := true
             ;AntiCaptcha()
             
         }
         ; Go to MapPlacementInstructions with the map that was found in the for loop. It is our first time calling, so true.
-        MapPlacementInstructions(mapName, true)
+        MapPlacementInstructions(mapName, true, randomMapDetection)
         AddToLog("Finished game")
         LobbyLoop() ; If replay is disable, then enter LobbyLoop. Once lobby is found, begin this entire loop again
     } ; end outer loop
@@ -202,6 +225,7 @@ GoToHalloweenEvent(){
     loop {
         mapName := "UnknownMap"
         SendInput ("{Tab}")
+        randomMapDetection := true
         enteringMap := false
         captchaSolved := false
         enteredRoom := 0
@@ -265,7 +289,7 @@ GoToHalloweenEvent(){
     
         } until (exitLoop) ; end inner loop
 
-        MapPlacementInstructions(mapName, true)
+        MapPlacementInstructions(mapName, true, randomMapDetection)
         LobbyLoop() ; if not replaying
     } ; end outer loop
 }
@@ -336,6 +360,83 @@ GoToRaids() {
 
 }
 
+; ParamsL x1 and y1 = the legends stage to select. x2 y2 the act of the legend stage to select
+GoToLegendStage(x1, y1, x2, y2, mapName) {
+    loop {
+        ;mapName := mapName
+        SendInput ("{Tab}")
+        enteringMap := false
+        captchaSolved := false
+        randomMapDetection := false
+        exitLoop := 0
+        loop {
+            ; Attempts to detect the map name. If it doesn't find any, the default mapName is "UnkownMap"
+            if (enteringMap) {
+                if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, MagicHills().MapImage))
+                    {
+                        break ; break for loop
+                    }
+            }
+            ; I opted to use loop until because there's roughly 30 or so seconds when you are waiting in the room if not match making.
+            ; because of this I need to do the for loop above all over again to constantly check the loading screen.
+            ; only when the votestart is detected will the loop exit
+            if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
+                AddToLog("Found VoteStart, stopping loop")
+                exitLoop := 1
+            }
+    
+            Sleep 100
+            
+            if(enteringMap == true || captchaSolved == true) {
+                continue
+            }
+            
+                BetterClick(89, 302)
+                Sleep 2000
+                SendInput ("{d down}")
+                Sleep 3500
+                SendInput ("{d up}")
+                Sleep 100
+                SendInput ("{w down}")
+                Sleep 5000
+                SendInput ("{w up}")
+                KeyWait "w"
+                Sleep 2000
+                BetterClick(710, 133) ; click legend stages
+                Sleep 1000
+                BetterClick(x1, y1) ; click magic hills
+                Sleep 1000
+                BetterClick(x2, y2) ; click legend stage
+                Sleep 1000
+                BetterClick(405, 440) ; click select
+                Sleep 1200
+                if (matchMakingEnabled) {
+                    BetterClick(469, 340) ; play (matchmaking mode)
+                    Sleep 2000
+                    captchaSolved := AntiCaptcha()
+                    AddToLog("returned from anti captcha")
+                    if (captchaSolved == true) {
+                        enteringMap := true
+                    } else {
+                        Sleep 30000
+                    }
+                } else {
+                    BetterClick(340, 320) ; play (non-matchmaking mode)
+                    Sleep 2000
+                    BetterClick(415, 450) ; click start
+                }
+                Sleep 2000
+                if !(matchMakingEnabled) {
+                    enteringMap := true
+                }
+    
+        } until (exitLoop) ; end inner loop
+
+        MapPlacementInstructions(mapName, true, randomMapDetection)
+        LobbyLoop() ; if not replaying
+    } ; end outer loop
+}
+
 StopMacro() {
     if ControlGetVisible(keybindsGui) {
         return
@@ -355,13 +456,13 @@ DetectMapName() {
     return "UnknownMap"
 }
 
-MapPlacementInstructions(mapName, firstTimeCalling) {
+MapPlacementInstructions(mapName, firstTimeCalling, randomMapDetection) {
     loop {
         ; If it's the first time calling MapPlacement, then DetectMapName() has more than likely already been done.
         ; This if statement is to reduce redundancy so you don't do the equivelent of DetectMapName all over again.
         ; This is needed because if a user selects the option of Replay instead of go to lobby (for gamemodes like infinity castle),
         ; It can detect the map name here again, rather then going back to the "GoToGameMode" functions
-        if !(firstTimeCalling) {
+        if (!firstTimeCalling && randomMapDetection := true) {
             AddToLog("Attempting to detect map name...")
             Sleep 2300
             mapName := DetectMapName()
@@ -388,11 +489,10 @@ MapPlacementInstructions(mapName, firstTimeCalling) {
         ; mapClasses["PuppetIsland"] := PuppetIsland()
         ; mapClasses["VirtualDungeon"] := VirtualDungeon()
         ; mapClasses["SnowyKingdom"] := SnowyKingdom()
-        ; mapClasses["DungeonThrone"] := DungeonThrone()
+        mapClasses["DungeonThrone"] := DungeonThrone()
         ; mapClasses["PlanetGreenie"] := PlanetGreenie()
         ; mapClasses["RainVillage"] := RainVillage()
-    
-        AddToLog("Detected mapName: " . mapName) ; Display detected map name
+
         
         ; Loop over mapClasses to find the selected map
         selectedMap := ""
@@ -772,6 +872,9 @@ LinePlacementGrid() {
 
         ; Continue placement for the current slot
         while (placementCount < placements && y >= endY && y2 <= endY2) { ; Rows
+            if(exitLoops){
+                break
+            }
             while (placementCount < placements && x <= endX) { ; Columns
                 if (alternatingPlacement == 0) {
 
@@ -1694,7 +1797,7 @@ Reconnect() {
             if (ok := FindText(&X, &Y, 746, 476, 862, 569, 0, 0, AreasText)) {
                 AddToLog("Reconnected Succesfully!")
                 hasReconnect := 1
-                return GoToRaids() ; Check for challenges in the lobby
+                return GameModes[currentGameMode].Call() ; Call the current gamemode function again. This does increase the call stack size, but oh well.
             }
             else {
                 Reconnect()

@@ -179,7 +179,8 @@ class MagicHills extends BaseMap {
         this.HoldKey("S", 1700)
         this.HoldKey("A", 3250)
         this.HoldKey("W", 3200)
-        this.HoldKey("A", 2500)
+        this.HoldKey("A", 5000)
+        this.HoldKey("W", 3000)
     }
 
 
@@ -269,6 +270,10 @@ class DungeonThrone extends BaseMap {
 
     TryPlacingUnits() {
         SpiralPlacement(true)
+    }
+
+    RunInstructions() {
+        this.HoldKey("D", 1000)
     }
 
 }
