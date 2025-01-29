@@ -36,6 +36,8 @@ LoadingScreen := "|<>*98$87.zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzwTzzzzzzzzzzzzX3z
 P := "|<>*88$35.3zzzy0Tzzzy0zzzzy3zzzzw7zzzzsTzzzzszzzzzlzzzzzXzw1zz7zs1zyDzk1zwTzV3zszz73zlzyC7zXzwQTz7zs0zyDzk3zwTzVzzszz7zzlzyDzzXzwTzz7zzzzyDzzzzwTzzzzszzzzzkzzzzzVzzzzy1zzzzw3zzzzk3zzzz00zzzs0000000000004"
 P2 := "|<>*102$165.1zzzs000Dzzz0003zzzk000zzzw0zzzzk007zzzy001zzzzU00TzzzsDzzzz001zzzzs00Tzzzy007zzzzXzzzzw00TzzzzU07zzzzs01zzzzyTzzzzU03zzzzw00zzzzz00Dzzzzrzzzzy00zzzzzk0Dzzzzw03zzzzzzzzzzk07zw3zy01zzzzzU0Tzzzzzzzzzy00zy07zk0Dzzzzw03zlyDzzzzzzk07zU0Ty01zzzzzU0Ts30Tzzzzzy00zs01zk0Dzzzzw03y001zzz0zzk07y0k7y01zzzzzU0TU007zzvzzy00zU60Tk0Dzzzzw03w000zzzTzzk07w003y01zzzzTU0TU007zzvzzy00z000Dk0Dzzzzw03w000zzzzzzk07s0k1y01zzzzzU0TU007zzzzzy00z060Dk0Dzzzzw03y001zzzzzzk07s0k1y01zzzzzU0Tk00Dzzzzzy00z060Dk0Dzzzzw03z003zzzzzzk07s0k1y01zzzzzU0Tw00zzzzzzy00zU60Tk0Dzzzzw03zk0Dzzzzzzk07w0k3y01zzzzzU0Tz03zzzzzzy00zk60zk0Dzzzzw03zw0zzzzzzzk07z00Dy01zzzzzU0TzkDzzzzzzy00zw03zk0Dzzzzw03zzbzzzzzzzk07zk0zy01zzzzzU0Tzzzzzzzzzy00zzkzzk0Dzzzzw03zzzzzzzzzzk07zzzzy01zzzzzU0Tzzzzvzzzzw00TzzzzU07zzzzs01zzzzyTzzzzU03zzzzw00zzzzz00Dzzzzlzzzzs00Dzzzz003zzzzk00zzzzw7zzzy000zzzzk00Dzzzw003zzzz0Dzzz0001zzzs000Tzzy0007zzzUU"
 Priority := "|<>*92$70.zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzs0000000000T00000000000s00000000001U0000000000600000000000M007zs000001U01zwU07U0060060200m000M00E1DvuA001U017zysss0060043W110U00M00E68442001U010MXkss006004TWD1X000M00Fu8x2C001U0168XUQ8006006En/1kU00M00D1zbxy001U0000870U00600000000000M00000000001k0000000000DU0000000001zzzzzzzzzzzzU"
+ChallengeRoomCancelButton:="|<>**50$71.0000000000000000000000000000000000000M00000003s07y0000000Ds0zz0000000Mk3U70000000lUC060000001X0M0Bzzz3yDx61VzzzzzDzzyA37zs1W7s7UQM6A1U307UC0MkAM606060MMFUMkAQASATlsX0lnswMwMzU361Vzlslslz0CC1VtVVXFVaDwS3U1U36XUA0MA3U706B70Q0kE3kzaSPDVy3sk3znzzbnzDyz00Y08420k7k8000000000000000000000000000000000000000000000000000000000004"
+BackToLobbyNoReplayButton:="|<>**50$154.000000000000000000000000000000000000000000000000000000000000000000000000000000y000000000000007k0DUT0000Dz007U000000D000zU1z3y0001kC00z0000001y003606AAM00060A06A000000AM00AM0MklU000M0MwMtklrCs0lkS0lVtXX71kk1XljzXzjzzzs77by36TyDgTDbk6D7kw1bnaAlkM3sQAPVsblDanUMwQ1k6/C0k31UC0slM3U70CD61XlU30Mgs30660k1X5060A0Mss606CCDWnXwAMQT76AQQMMkllX0M0sssm/CDltUlgSAllsXn7b6A1U3U6X8wsn5a36lsn77WDASS1U6D6DuDVXXAKMAT76AQQMMkls60MwMNcD0CAlNUEQ0Mkk1U306kk1XFk2kw0sn5a1Vs3X1UC0Q0nX06RbkPnQnbAqM7asQ7DVtbnDAM0DbnzbwzzsTTUDtzUDryztzklU0843s30120E8061k0A70W146A000000000000000000000000Mk000000000000000000000001X0000000000000000000000003s00000000000000000000000070000000000000000000000000008"
 
 ; Just in case a player runs into "Cannot place unit" these values will hold that placement number. This is
 ; needed for every placement amount because FindText doesn't recognize the text "Cannot place more than" very well.
@@ -54,16 +56,21 @@ global cardPickerEnabled := 1
 global hasReconnect := 0
 global matchMakingEnabled := 0
 global backToLobbyEnabled := 0
-
+; 730, 400 good dungeon throne start coords
 ; Add other gamemodes here
 global GameModes := Map()
+GameModes["default"] := () => GoToRaids()
 GameModes["halloweenEvent"] := () => GoToHalloweenEvent() ;Add GoToHalloween gamemode here. If you need help with it dm me on disc @Durrenth (I made my own)
 GameModes["infinityCastle"] := () => GoToInfinityCastle()
 GameModes["christmasEvent"] := () => GoToRaids()
-GameModes["magicHillsLegend1"] := () => GoToLegendStage(730, 245, 300, 240, "MagicHills")
-GameModes["magicHillsLegend2"] := () => GoToLegendStage(730, 245, 300, 270, "MagicHills")
-GameModes["magicHillsLegend3"] := () => GoToLegendStage(730, 245, 300, 305, "MagicHills")
-GameModes["default"] := () => GoToRaids()
+GameModes["challenges"] := () => GoToChallenges()
+GameModes["magicHillsLegend1"] := () => GoToLegendStage(730, 245, 300, 240, "MagicHills", MagicHills(), false, 0)
+GameModes["magicHillsLegend2"] := () => GoToLegendStage(730, 245, 300, 270, "MagicHills", MagicHills(), false, 0)
+GameModes["magicHillsLegend3"] := () => GoToLegendStage(730, 245, 300, 305, "MagicHills", MagicHills(), false, 0)
+Gamemodes["rainVillageLegend1"] := () => GoToLegendStage(730, 430, 300, 240, "RainVillage", RainVillage(), true, 1)
+Gamemodes["rainVillageLegend2"] := () => GoToLegendStage(730, 430, 300, 270, "RainVillage", RainVillage(), true, 1)
+Gamemodes["rainVillageLegend3"] := () => GoToLegendStage(730, 430, 300, 305, "RainVillage", RainVillage(), true, 1)
+gameModes["infiniteUnitXP"] := () => GoToInfiniteMode(730, 330, "MagicHills", MagicHills(), true, 3)
 global currentGameMode := "default"
 
 ; This stores all the maps in the entire game. CHeck Maps.ahk for more info (uses OOP)
@@ -74,12 +81,14 @@ global storyMaps := [
     AntKingdom(),
     MagicTown(),
     MagicHills(),
+    NightmareTrain(),
+    RainVillage()
     ; PlanetGreenie(),
+    ; HauntedAcademy(),
     ; SandVillage(),
     ; NavyBay(),
     ; FiendCity(),
     ; SpiritWorld(),
-    ; HauntedAcademy(),
     ; SpaceCenter(),
     ; AlienSpaceship(),
     ; FabledKingdom(),
@@ -87,7 +96,6 @@ global storyMaps := [
     ; PuppetIsland(),
     ; VirtualDungeon(),
     ; SnowyKingdom(),
-    ; RainVillage()
 ]
 
 SetupMacro() {
@@ -137,12 +145,22 @@ InitializeMacro() {
                 currentGameMode := "halloweenEvent"
             case "Christmas Event":
                 currentGameMode := "christmasEvent"
+            case "Challenges":
+                currentGameMode := "challenges"
             case "Magic Hills Legend 1":
                 currentGameMode := "magicHillsLegend1"
             case "Magic Hills Legend 2":
                 currentGameMode := "magicHillsLegend2"
             case "Magic Hills Legend 3":
                 currentGameMode := "magicHillsLegend3"
+            case "Infinite Mode Unit XP":
+                currentGameMode := "infiniteUnitXP"
+            case "Rain Village Legend 1":
+                currentGameMode := "rainVillageLegend1"
+            case "Rain Village Legend 2":
+                currentGameMode := "rainVillageLegend2"
+            case "Rain Village Legend 3":
+                currentGameMode := "rainVillageLegend3"
             default:
                 MsgBox("Invalid gamemode selection for some reason. Pls report k thx bye", "Error")
                 return
@@ -176,6 +194,87 @@ BetterClick(x, y, LR := "Left") { ; credits to yuh for this, lowk a life saver
 
 ; By @Durrenth
 ; Infinity castle macro
+GoToInfiniteMode(x1, y1, mapName, mapObject, scrollDownEnabled, scrollDownAmount) {
+    loop {
+        ;mapName := mapName
+        SendInput ("{Tab}")
+        enteringMap := false
+        captchaSolved := false
+        exitLoop := 0
+        loop {
+            ; Attempts to detect the map name. If it doesn't find any, the default mapName is "UnkownMap"
+            if (enteringMap) {
+                if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, mapObject.MapImage))
+                    {
+                        AddToLog("Found map name text")
+                        break ; break for loop
+                    }
+                }
+                ; I opted to use loop untidl because there's roughly 30 or so seconds when you are waiting in the room if not match making.
+                ; because of this I need to do the for loop above all over again to constantly check the loading screen.
+                ; only when the votestart is detected will the loop exit
+                if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
+                    AddToLog("Found VoteStart, stopping loop")
+                    exitLoop := 1
+                }
+                
+                Sleep 100
+                
+                if(enteringMap == true || captchaSolved == true) {
+                    continue
+                }
+                
+                BetterClick(89, 302)
+                Sleep 2000
+                SendInput ("{d down}")
+                Sleep 3500
+                SendInput ("{d up}")
+                Sleep 100
+                SendInput ("{w down}")
+                Sleep 5000
+                SendInput ("{w up}")
+                KeyWait "w"
+                Sleep 3000
+                if (scrollDownEnabled) {
+                    MouseMove(730, 245)
+                    Sleep 100
+                    loop scrollDownAmount {
+                        Sleep 1000
+                        SendInput("{WheelDown 1}") ; scroll
+                    }
+                }
+                Sleep 500
+                BetterClick(x1, y1) ; click story stage
+                Sleep 1000
+                BetterClick(405, 440) ; click select
+                Sleep 1200
+                if (matchMakingEnabled) {
+                    BetterClick(469, 340) ; play (matchmaking mode)
+                    Sleep 2000
+                    captchaSolved := AntiCaptcha()
+                    AddToLog("returned from anti captcha")
+                    if (captchaSolved == true) {
+                        enteringMap := true
+                    } else {
+                        Sleep 30000
+                    }
+                } else {
+                    BetterClick(340, 320) ; play (non-matchmaking mode)
+                    Sleep 2000
+                    BetterClick(415, 450) ; click start
+                }
+                Sleep 2000
+                if !(matchMakingEnabled) {
+                    enteringMap := true
+                }
+    
+        } until (exitLoop) ; end inner loop
+
+        MapPlacementInstructions(mapName, true, false)
+        LobbyLoop() ; if not replaying
+    } ; end outer loop
+}
+
 GoToInfinityCastle() {
     Loop {
         mapName := "UnknownMap"
@@ -196,9 +295,9 @@ GoToInfinityCastle() {
                 break
             }
     
-            BetterClick(770, 470)
+            BetterClick(770, 470) ; Click areas
             Sleep 750
-            BetterClick(280, 340)
+            BetterClick(280, 340) ; Click Infinity castle
             Sleep 4000
             SendInput ("{a down}")
             Sleep 3000
@@ -221,7 +320,7 @@ GoToInfinityCastle() {
     } ; end outer loop
 }
 
-GoToHalloweenEvent(){
+GoToHalloweenEvent() {
     loop {
         mapName := "UnknownMap"
         SendInput ("{Tab}")
@@ -361,9 +460,8 @@ GoToRaids() {
 }
 
 ; ParamsL x1 and y1 = the legends stage to select. x2 y2 the act of the legend stage to select
-GoToLegendStage(x1, y1, x2, y2, mapName) {
+GoToLegendStage(x1, y1, x2, y2, mapName, mapObject, scrollDownEnabled, scrollDownAmount) {
     loop {
-        ;mapName := mapName
         SendInput ("{Tab}")
         enteringMap := false
         captchaSolved := false
@@ -372,7 +470,7 @@ GoToLegendStage(x1, y1, x2, y2, mapName) {
         loop {
             ; Attempts to detect the map name. If it doesn't find any, the default mapName is "UnkownMap"
             if (enteringMap) {
-                if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, MagicHills().MapImage))
+                if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, mapObject.MapImage))
                     {
                         break ; break for loop
                     }
@@ -404,9 +502,18 @@ GoToLegendStage(x1, y1, x2, y2, mapName) {
                 Sleep 2000
                 BetterClick(710, 133) ; click legend stages
                 Sleep 1000
-                BetterClick(x1, y1) ; click magic hills
+                if (scrollDownEnabled) {
+                    MouseMove(730, 245)
+                    Sleep 100
+                    loop scrollDownAmount {
+                        Sleep 1000
+                        SendInput("{WheelDown 1}") ; scroll
+                    }
+                }
                 Sleep 1000
-                BetterClick(x2, y2) ; click legend stage
+                BetterClick(x1, y1) ; click the legend stage you want
+                Sleep 1000
+                BetterClick(x2, y2) ; click legend stage/act
                 Sleep 1000
                 BetterClick(405, 440) ; click select
                 Sleep 1200
@@ -437,6 +544,72 @@ GoToLegendStage(x1, y1, x2, y2, mapName) {
     } ; end outer loop
 }
 
+; AFK timer kicks in after 20 mins, need to click so the player stays in game
+; Need a way to detect if the player is actually in the room (via image detection)
+; Time to sleep for 19 mins, and then click once, and then sleep for another 10 mins
+GoToChallenges() {
+    loop {
+        mapName := "UnknownMap"
+        SendInput ("{Tab}")
+        randomMapDetection := true
+        enteringMap := false
+        captchaSolved := false
+        enteredRoom := 0
+        exitLoop := 0
+        loop {
+    
+            ; Attempts to detect the map name. If it doesn't find any, the default mapName is "UnkownMap"
+            if (enteringMap) {
+                for map in storyMaps {
+                    if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, map.MapImage))
+                    {
+                        mapName := map.Name  ; Save the detected map name  
+                        exitLoop := 1
+                        break ; break for loop
+                    }
+                }
+            }
+            ; I opted to use loop until because there's roughly 30 or so seconds when you are waiting in the room if not match making.
+            ; because of this I need to do the for loop above all over again to constantly check the loading screen.
+            ; only when the votestart is detected will the loop exit
+            if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
+                AddToLog("Found VoteStart, stopping loop")
+                exitLoop := 1
+            }
+
+            Sleep 100 
+            if (enteredRoom = true) {
+                continue
+            }
+            
+            BetterClick(770, 470) ; Click areas
+            Sleep 750
+            BetterClick(280, 410) ; Click Challenges
+            Sleep 1000
+            SendInput ("{d down}")
+            Sleep 2000
+            SendInput("{d up}")
+            SendInput ("{s down}")
+            Sleep 6000
+            SendInput ("{s up}")
+            KeyWait "s"
+            if (ok:=FindText(&X, &Y, 373, 547, 498, 596, 0, 0, ChallengeRoomCancelButton))
+            {
+                AddToLog("Entered room")
+                enteredRoom := 1
+                enteringMap := true
+            }
+        } until (exitLoop) ; end inner loop
+
+        MapPlacementInstructions(mapName, true, true)
+        LobbyLoop() ; if not replaying
+        Sleep 5000
+        ; Sleep 1140000
+        ; BetterClick(300, 300) ; Anti AFK click
+        ; Sleep 630000
+    } ; end outer loop
+}
+
 StopMacro() {
     if ControlGetVisible(keybindsGui) {
         return
@@ -462,7 +635,7 @@ MapPlacementInstructions(mapName, firstTimeCalling, randomMapDetection) {
         ; This if statement is to reduce redundancy so you don't do the equivelent of DetectMapName all over again.
         ; This is needed because if a user selects the option of Replay instead of go to lobby (for gamemodes like infinity castle),
         ; It can detect the map name here again, rather then going back to the "GoToGameMode" functions
-        if (!firstTimeCalling && randomMapDetection := true) {
+        if (!firstTimeCalling && randomMapDetection) {
             AddToLog("Attempting to detect map name...")
             Sleep 2300
             mapName := DetectMapName()
@@ -477,6 +650,9 @@ MapPlacementInstructions(mapName, firstTimeCalling, randomMapDetection) {
         mapClasses["AntKingdom"] := AntKingdom() ; *
         mapClasses["MagicTown"] := MagicTown() ; *
         mapClasses["MagicHills"] := MagicHills() ; *
+        mapClasses["DungeonThrone"] := DungeonThrone()
+        mapClasses["NightmareTrain"] := NightmareTrain()
+        mapClasses["RainVillage"] := RainVillage()
         ;mapClasses["SandVillage"] := SandVillage() ; **
         ; mapClasses["HauntedAcademy"] := HauntedAcademy() ; **
         ; mapClasses["SpaceCenter"] := SpaceCenter() ; **
@@ -489,9 +665,7 @@ MapPlacementInstructions(mapName, firstTimeCalling, randomMapDetection) {
         ; mapClasses["PuppetIsland"] := PuppetIsland()
         ; mapClasses["VirtualDungeon"] := VirtualDungeon()
         ; mapClasses["SnowyKingdom"] := SnowyKingdom()
-        mapClasses["DungeonThrone"] := DungeonThrone()
         ; mapClasses["PlanetGreenie"] := PlanetGreenie()
-        ; mapClasses["RainVillage"] := RainVillage()
 
         
         ; Loop over mapClasses to find the selected map
@@ -1447,7 +1621,12 @@ ShouldStopUpgrading(sleepamount := 300) {
         }
 
         if (backToLobbyEnabled) {
-            BetterClick(376, 117) ; Back to Lobby
+            if (currentGameMode == "challenges") {
+                AddToLog("Challenge button detected to click")
+                BetterClick(400, 117) ; Back to Lobby
+            } else {
+                BetterClick(376, 117) ; Back to Lobby
+            }
         } else {
             BetterClick(540, 117) ; Replay
         }
@@ -1593,6 +1772,12 @@ LobbyLoop() {
 CheckForLobbyButton() {
     if (ok := FindText(&X, &Y, 273, 103, 482, 214, 0, 0, LobbyText))
     {
+        return true
+    }
+    ; This is here for challenges since the button is different
+    if (ok:=FindText(&X, &Y, 345, 137, 524, 196, 0, 0, BackToLobbyNoReplayButton))
+    {
+        AddToLog("Challenge button detected")
         return true
     }
 }
