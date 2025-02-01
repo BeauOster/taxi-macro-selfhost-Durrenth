@@ -49,9 +49,6 @@ CannotPlaceUnit5:="|<>FF494C-1.00$484.000000000000000000000000000000000000000000
 ;CannotPlaceUnitUnique <message capture here>, then add to array below
 CannotPlaceUnitsArr := [CannotPlaceUnit1, CannotPlaceUnit2, CannotPlaceUnit3, CannotPlaceUnit4, CannotPlaceUnit5]
 
-
-CheckForUpdates()
-
 global cardPickerEnabled := 1
 global hasReconnect := 0
 global matchMakingEnabled := 0
