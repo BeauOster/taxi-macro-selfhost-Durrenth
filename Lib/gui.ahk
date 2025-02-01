@@ -126,9 +126,9 @@ GamemodeDescriptions["Magic Hills Legend 3"] := "Select this if you want to limi
 GamemodeDescriptions["Rain Village Legend 1"] := "Contains red scrolls. Aqua and light element buffs."
 GamemodeDescriptions["Rain Village Legend 2"] := "Contains blue scrolls. Fire and rose element buffs."
 GamemodeDescriptions["Rain Village Legend 3"] := "Contains green scrolls, dark and storm element buffs."
-GamemodeDescriptions["Contracts Tier 1-3"] := "Selects the first available contract. Random map detection enabled."
-GamemodeDescriptions["Contracts Tier 4-6"] := "Selects the second available contract. Random map detection enabled."
-GamemodeDescriptions["Contracts Tier 7-12"] := "Selects the second available contract. Random map detection disabled."
+GamemodeDescriptions["Contracts Tier 1-3"] := "MAKE SURE BACK TO LOBBY IS ENABLED. DOES NOT WORK WITH REPLAY. Selects the first available contract. Random map detection enabled."
+GamemodeDescriptions["Contracts Tier 4-6"] := "MAKE SURE BACK TO LOBBY IS ENABLED. DOES NOT WORK WITH REPLAY. Selects the second available contract. Random map detection enabled."
+GamemodeDescriptions["Contracts Tier 7-12"] := "MAKE SURE BACK TO LOBBY IS ENABLED. DOES NOT WORK WITH REPLAY. Selects the first higher tier map."
 
 GamemodeDropdown.OnEvent("Change", (*) => UpdateGamemodeInfo())
 
