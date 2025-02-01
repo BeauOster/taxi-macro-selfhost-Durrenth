@@ -13,6 +13,7 @@
 #Include %A_ScriptDir%\Lib\keybinds.ahk
 #Include %A_ScriptDir%\Lib\IsProcessElevated.ahk
 #Include %A_ScriptDir%\Lib\updates.ahk
+#Include %A_ScriptDir%\Lib\Maps.ahk
 
 global MacroStartTime := A_TickCount
 global StageStartTime := A_TickCount
@@ -35,6 +36,8 @@ LoadingScreen := "|<>*98$87.zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzwTzzzzzzzzzzzzX3z
 P := "|<>*88$35.3zzzy0Tzzzy0zzzzy3zzzzw7zzzzsTzzzzszzzzzlzzzzzXzw1zz7zs1zyDzk1zwTzV3zszz73zlzyC7zXzwQTz7zs0zyDzk3zwTzVzzszz7zzlzyDzzXzwTzz7zzzzyDzzzzwTzzzzszzzzzkzzzzzVzzzzy1zzzzw3zzzzk3zzzz00zzzs0000000000004"
 P2 := "|<>*102$165.1zzzs000Dzzz0003zzzk000zzzw0zzzzk007zzzy001zzzzU00TzzzsDzzzz001zzzzs00Tzzzy007zzzzXzzzzw00TzzzzU07zzzzs01zzzzyTzzzzU03zzzzw00zzzzz00Dzzzzrzzzzy00zzzzzk0Dzzzzw03zzzzzzzzzzk07zw3zy01zzzzzU0Tzzzzzzzzzy00zy07zk0Dzzzzw03zlyDzzzzzzk07zU0Ty01zzzzzU0Ts30Tzzzzzy00zs01zk0Dzzzzw03y001zzz0zzk07y0k7y01zzzzzU0TU007zzvzzy00zU60Tk0Dzzzzw03w000zzzTzzk07w003y01zzzzTU0TU007zzvzzy00z000Dk0Dzzzzw03w000zzzzzzk07s0k1y01zzzzzU0TU007zzzzzy00z060Dk0Dzzzzw03y001zzzzzzk07s0k1y01zzzzzU0Tk00Dzzzzzy00z060Dk0Dzzzzw03z003zzzzzzk07s0k1y01zzzzzU0Tw00zzzzzzy00zU60Tk0Dzzzzw03zk0Dzzzzzzk07w0k3y01zzzzzU0Tz03zzzzzzy00zk60zk0Dzzzzw03zw0zzzzzzzk07z00Dy01zzzzzU0TzkDzzzzzzy00zw03zk0Dzzzzw03zzbzzzzzzzk07zk0zy01zzzzzU0Tzzzzzzzzzy00zzkzzk0Dzzzzw03zzzzzzzzzzk07zzzzy01zzzzzU0Tzzzzvzzzzw00TzzzzU07zzzzs01zzzzyTzzzzU03zzzzw00zzzzz00Dzzzzlzzzzs00Dzzzz003zzzzk00zzzzw7zzzy000zzzzk00Dzzzw003zzzz0Dzzz0001zzzs000Tzzy0007zzzUU"
 Priority := "|<>*92$70.zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzs0000000000T00000000000s00000000001U0000000000600000000000M007zs000001U01zwU07U0060060200m000M00E1DvuA001U017zysss0060043W110U00M00E68442001U010MXkss006004TWD1X000M00Fu8x2C001U0168XUQ8006006En/1kU00M00D1zbxy001U0000870U00600000000000M00000000001k0000000000DU0000000001zzzzzzzzzzzzU"
+ChallengeRoomCancelButton:="|<>**50$71.0000000000000000000000000000000000000M00000003s07y0000000Ds0zz0000000Mk3U70000000lUC060000001X0M0Bzzz3yDx61VzzzzzDzzyA37zs1W7s7UQM6A1U307UC0MkAM606060MMFUMkAQASATlsX0lnswMwMzU361Vzlslslz0CC1VtVVXFVaDwS3U1U36XUA0MA3U706B70Q0kE3kzaSPDVy3sk3znzzbnzDyz00Y08420k7k8000000000000000000000000000000000000000000000000000000000004"
+BackToLobbyNoReplayButton:="|<>**50$154.000000000000000000000000000000000000000000000000000000000000000000000000000000y000000000000007k0DUT0000Dz007U000000D000zU1z3y0001kC00z0000001y003606AAM00060A06A000000AM00AM0MklU000M0MwMtklrCs0lkS0lVtXX71kk1XljzXzjzzzs77by36TyDgTDbk6D7kw1bnaAlkM3sQAPVsblDanUMwQ1k6/C0k31UC0slM3U70CD61XlU30Mgs30660k1X5060A0Mss606CCDWnXwAMQT76AQQMMkllX0M0sssm/CDltUlgSAllsXn7b6A1U3U6X8wsn5a36lsn77WDASS1U6D6DuDVXXAKMAT76AQQMMkls60MwMNcD0CAlNUEQ0Mkk1U306kk1XFk2kw0sn5a1Vs3X1UC0Q0nX06RbkPnQnbAqM7asQ7DVtbnDAM0DbnzbwzzsTTUDtzUDryztzklU0843s30120E8061k0A70W146A000000000000000000000000Mk000000000000000000000001X0000000000000000000000003s00000000000000000000000070000000000000000000000000008"
 
 ; Just in case a player runs into "Cannot place unit" these values will hold that placement number. This is
 ; needed for every placement amount because FindText doesn't recognize the text "Cannot place more than" very well.
@@ -46,12 +49,51 @@ CannotPlaceUnit5:="|<>FF494C-1.00$484.000000000000000000000000000000000000000000
 ;CannotPlaceUnitUnique <message capture here>, then add to array below
 CannotPlaceUnitsArr := [CannotPlaceUnit1, CannotPlaceUnit2, CannotPlaceUnit3, CannotPlaceUnit4, CannotPlaceUnit5]
 
-
-CheckForUpdates()
-
-
 global cardPickerEnabled := 1
 global hasReconnect := 0
+global matchMakingEnabled := 0
+global backToLobbyEnabled := 0
+; 730, 400 good dungeon throne start coords
+; Add other gamemodes here
+global GameModes := Map()
+GameModes["default"] := () => GoToRaids()
+GameModes["halloweenEvent"] := () => GoToHalloweenEvent() ;Add GoToHalloween gamemode here. If you need help with it dm me on disc @Durrenth (I made my own)
+GameModes["infinityCastle"] := () => GoToInfinityCastle()
+GameModes["christmasEvent"] := () => GoToRaids()
+GameModes["challenges"] := () => GoToChallenges()
+GameModes["magicHillsLegend1"] := () => GoToLegendStage(730, 245, 300, 240, "MagicHills", MagicHills(), false, 0)
+GameModes["magicHillsLegend2"] := () => GoToLegendStage(730, 245, 300, 270, "MagicHills", MagicHills(), false, 0)
+GameModes["magicHillsLegend3"] := () => GoToLegendStage(730, 245, 300, 305, "MagicHills", MagicHills(), false, 0)
+Gamemodes["rainVillageLegend1"] := () => GoToLegendStage(730, 430, 300, 240, "RainVillage", RainVillage(), true, 1)
+Gamemodes["rainVillageLegend2"] := () => GoToLegendStage(730, 430, 300, 270, "RainVillage", RainVillage(), true, 1)
+Gamemodes["rainVillageLegend3"] := () => GoToLegendStage(730, 430, 300, 305, "RainVillage", RainVillage(), true, 1)
+gameModes["infiniteUnitXP"] := () => GoToInfiniteMode(730, 330, "MagicHills", MagicHills(), true, 3)
+global currentGameMode := "default"
+
+; This stores all the maps in the entire game. CHeck Maps.ahk for more info (uses OOP)
+global storyMaps := [
+    DungeonThrone(),
+    MountainTemple(),
+    SnowyTown(),
+    AntKingdom(),
+    MagicTown(),
+    MagicHills(),
+    NightmareTrain(),
+    RainVillage()
+    ; PlanetGreenie(),
+    ; HauntedAcademy(),
+    ; SandVillage(),
+    ; NavyBay(),
+    ; FiendCity(),
+    ; SpiritWorld(),
+    ; SpaceCenter(),
+    ; AlienSpaceship(),
+    ; FabledKingdom(),
+    ; RuinedCity()
+    ; PuppetIsland(),
+    ; VirtualDungeon(),
+    ; SnowyKingdom(),
+]
 
 SetupMacro() {
     if ControlGetVisible(keybindsGui) {
@@ -90,9 +132,38 @@ InitializeMacro() {
         MsgBox("You must have ROBLOX open in order to start the macro (microsoft roblox doesnt work)", "Error T4", "+0x1000",)
         return
     }
-
+    ; Checks the current gamemode thats set and calls the function
     if (ok := FindText(&X, &Y, 746, 476, 862, 569, 0, 0, AreasText)) {
-        GoToRaids()
+        ; Use dropdown selection to set the current gamemode
+        switch GamemodeDropdown.Text {
+            case "Infinity Castle":
+                currentGameMode := "infinityCastle"
+            case "Halloween Event":
+                currentGameMode := "halloweenEvent"
+            case "Christmas Event":
+                currentGameMode := "christmasEvent"
+            case "Challenges":
+                currentGameMode := "challenges"
+            case "Magic Hills Legend 1":
+                currentGameMode := "magicHillsLegend1"
+            case "Magic Hills Legend 2":
+                currentGameMode := "magicHillsLegend2"
+            case "Magic Hills Legend 3":
+                currentGameMode := "magicHillsLegend3"
+            case "Infinite Mode Unit XP":
+                currentGameMode := "infiniteUnitXP"
+            case "Rain Village Legend 1":
+                currentGameMode := "rainVillageLegend1"
+            case "Rain Village Legend 2":
+                currentGameMode := "rainVillageLegend2"
+            case "Rain Village Legend 3":
+                currentGameMode := "rainVillageLegend3"
+            default:
+                MsgBox("Invalid gamemode selection for some reason. Pls report k thx bye", "Error")
+                return
+        }
+        ; Call the corresponding function for the current gamemode
+        GameModes[currentGameMode].Call()
     }
     else {
         MsgBox("You must be in the lobby with default camera angle to start the macro.", "Error T3", "+0x1000",)
@@ -118,49 +189,422 @@ BetterClick(x, y, LR := "Left") { ; credits to yuh for this, lowk a life saver
     Sleep(50)
 }
 
-GoToRaids() {
-    SendInput ("{Tab}")
+; By @Durrenth
+; Infinity castle macro
+GoToInfiniteMode(x1, y1, mapName, mapObject, scrollDownEnabled, scrollDownAmount) {
     loop {
-        ; go to xmas map
-        if (ok := FindText(&X, &Y, 10, 70, 350, 205, 0, 0, LoadingScreen)) {
-            AddToLog("Found LoadingScreen, stopping loop")
-            break
-        }
-        if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
-            AddToLog("Found VoteStart, stopping loop")
-            break
-        }
-        if (ok := FindText(&X, &Y, 338, 505, 536, 572, 0, 0, ClaimText)) ; daily reward
-        {
-            BetterClick(406, 497)
+        ;mapName := mapName
+        SendInput ("{Tab}")
+        enteringMap := false
+        captchaSolved := false
+        exitLoop := 0
+        loop {
+            ; Attempts to detect the map name. If it doesn't find any, the default mapName is "UnkownMap"
+            if (enteringMap) {
+                if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, mapObject.MapImage))
+                    {
+                        AddToLog("Found map name text")
+                        break ; break for loop
+                    }
+                }
+                ; I opted to use loop untidl because there's roughly 30 or so seconds when you are waiting in the room if not match making.
+                ; because of this I need to do the for loop above all over again to constantly check the loading screen.
+                ; only when the votestart is detected will the loop exit
+                if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
+                    AddToLog("Found VoteStart, stopping loop")
+                    exitLoop := 1
+                }
+                
+                Sleep 100
+                
+                if(enteringMap == true || captchaSolved == true) {
+                    continue
+                }
+                
+                BetterClick(89, 302)
+                Sleep 2000
+                SendInput ("{d down}")
+                Sleep 3500
+                SendInput ("{d up}")
+                Sleep 100
+                SendInput ("{w down}")
+                Sleep 5000
+                SendInput ("{w up}")
+                KeyWait "w"
+                Sleep 3000
+                if (scrollDownEnabled) {
+                    MouseMove(730, 245)
+                    Sleep 100
+                    loop scrollDownAmount {
+                        Sleep 1000
+                        SendInput("{WheelDown 1}") ; scroll
+                    }
+                }
+                Sleep 500
+                BetterClick(x1, y1) ; click story stage
+                Sleep 1000
+                BetterClick(405, 440) ; click select
+                Sleep 1200
+                if (matchMakingEnabled) {
+                    BetterClick(469, 340) ; play (matchmaking mode)
+                    Sleep 2000
+                    captchaSolved := AntiCaptcha()
+                    AddToLog("returned from anti captcha")
+                    if (captchaSolved == true) {
+                        enteringMap := true
+                    } else {
+                        Sleep 30000
+                    }
+                } else {
+                    BetterClick(340, 320) ; play (non-matchmaking mode)
+                    Sleep 2000
+                    BetterClick(415, 450) ; click start
+                }
+                Sleep 2000
+                if !(matchMakingEnabled) {
+                    enteringMap := true
+                }
+    
+        } until (exitLoop) ; end inner loop
+
+        MapPlacementInstructions(mapName, true, false)
+        LobbyLoop() ; if not replaying
+    } ; end outer loop
+}
+
+GoToInfinityCastle() {
+    Loop {
+        mapName := "UnknownMap"
+        SendInput ("{Tab}")
+        randomMapDetection := true
+        enteringMap := false
+        loop {
+
+            ; Attempts to detect the map name. If it doesn't find any, the default mapName is "UnkownMap"
+            if (enteringMap) {
+                mapName := DetectMapName()
+                break
+            }
+    
+            ; Prevention in case attempting to find the map doesn't work
+            if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
+                AddToLog("Found VoteStart, stopping loop")
+                break
+            }
+    
+            BetterClick(770, 470) ; Click areas
+            Sleep 750
+            BetterClick(280, 340) ; Click Infinity castle
+            Sleep 4000
+            SendInput ("{a down}")
             Sleep 3000
+            SendInput ("{a up}")
+            SendInput ("{w down}")
+            Sleep 600
+            SendInput ("{w up}")
+            Sleep 2000
+            ;BetterClick(430,390) Normal difficulty Coords
+            BetterClick(425,440)
+            Sleep 4000
+            enteringMap := true
+            ;AntiCaptcha()
+            
         }
+        ; Go to MapPlacementInstructions with the map that was found in the for loop. It is our first time calling, so true.
+        MapPlacementInstructions(mapName, true, randomMapDetection)
+        AddToLog("Finished game")
+        LobbyLoop() ; If replay is disable, then enter LobbyLoop. Once lobby is found, begin this entire loop again
+    } ; end outer loop
+}
 
+GoToHalloweenEvent() {
+    loop {
+        mapName := "UnknownMap"
+        SendInput ("{Tab}")
+        randomMapDetection := true
+        enteringMap := false
+        captchaSolved := false
+        enteredRoom := 0
+        exitLoop := 0
+        loop {
+    
+            ; Attempts to detect the map name. If it doesn't find any, the default mapName is "UnkownMap"
+            if (enteringMap) {
+                for map in storyMaps {
+                    if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, map.MapImage))
+                        {
+                            mapName := map.Name  ; Save the detected map name  
+                            break ; break for loop
+                        }
+                    }
+            }
+            ; I opted to use loop until because there's roughly 30 or so seconds when you are waiting in the room if not match making.
+            ; because of this I need to do the for loop above all over again to constantly check the loading screen.
+            ; only when the votestart is detected will the loop exit
+            if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
+                AddToLog("Found VoteStart, stopping loop")
+                exitLoop := 1
+            }
+    
+            Sleep 100
+            
+            if(enteredRoom = true && backToLobbyEnabled == false || captchaSolved == true) {
+                continue
+            }
+            
+                BetterClick(89, 302)
+                Sleep 2000
+                SendInput ("{w down}")
+                Sleep 2000
+                SendInput ("{w up}")
+                Sleep 100
+                SendInput ("{a down}")
+                Sleep 5000
+                SendInput ("{a up}")
+                KeyWait "a"
+                Sleep 1200
+                if (matchMakingEnabled) {
+                    BetterClick(469, 340) ; play (matchmaking mode)
+                    Sleep 2000
+                    captchaSolved := AntiCaptcha()
+                    AddToLog("returned from anti captcha")
+                    if (captchaSolved == true) {
+                        enteringMap := true
+                    } else {
+                        Sleep 30000
+                    }
+                } else {
+                    BetterClick(380, 340) ; play (non-matchmaking mode)
+                    Sleep 2000
+                }
+                Sleep 2000
+                enteredRoom :=1
+                if !(matchMakingEnabled) {
+                    enteringMap := true
+                }
+    
+        } until (exitLoop) ; end inner loop
 
-        ; go to xmas map
+        MapPlacementInstructions(mapName, true, randomMapDetection)
+        LobbyLoop() ; if not replaying
+    } ; end outer loop
+}
 
-        BetterClick(89, 302)
-        Sleep 2000
-        SendInput ("{a up}")
-        ; go to teleporter
-        Sleep 100
-        SendInput ("{a down}")
-        Sleep 6000
-        SendInput ("{a up}")
-        KeyWait "a" ; Wait for "d" to be fully processed
+GoToRaids() {
+    loop {
+        SendInput ("{Tab}")
+        enteredRoom := 0
+        loop {
+            ; go to xmas map
+            if (ok := FindText(&X, &Y, 10, 70, 350, 205, 0, 0, LoadingScreen)) {
+                AddToLog("Found LoadingScreen, stopping loop")
+                break
+            }
+            if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
+                AddToLog("Found VoteStart, stopping loop")
+                break
+            }
+            if (ok := FindText(&X, &Y, 338, 505, 536, 572, 0, 0, ClaimText)) ; daily reward
+            {
+                BetterClick(406, 497)
+                Sleep 3000
+            }
 
-        ;sacred planet act 4
-        Sleep 1200
-        BetterClick(469, 340) ; play
-        Sleep 2000
+            if(enteredRoom) {
+                continue
+            }
+    
+            ; go to xmas map
+            BetterClick(89, 302)
+            Sleep 2000
+            SendInput ("{a up}")
+            ; go to teleporter
+            Sleep 100
+            SendInput ("{a down}")
+            Sleep 6000
+            SendInput ("{a up}")
+            KeyWait "a" ; Wait for "d" to be fully processed
+    
+            ;sacred planet act 4
+            Sleep 1200
+            if (matchMakingEnabled) {
+                BetterClick(469, 340) ; play (matchmaking mode)
+                Sleep 2000
+                AntiCaptcha()
+            } else {
+                BetterClick(380, 340) ; play (non-matchmaking mode)
+                Sleep 1000
+                enteredRoom := 1
+            }
+            Sleep 2000
+    
+        } ; end inner loop
+        loop { ; this loop is here incase the user replays
+            LoadedLoop()
+            StartedLoop()
+            OnSpawnSetup()
+            TryPlacingUnits()
+            if !(backToLobbyEnabled) {
+                AddToLog("Finished game, replaying")
+                continue
+            }
+            AddToLog("Finished game, returning to lobby")
+            LobbyLoop()
+            break
+        }
+    } ; end outer loop
 
-        AntiCaptcha()
-    }
-    LoadedLoop()
-    StartedLoop()
-    OnSpawnSetup()
-    TryPlacingUnits()
+}
 
+; ParamsL x1 and y1 = the legends stage to select. x2 y2 the act of the legend stage to select
+GoToLegendStage(x1, y1, x2, y2, mapName, mapObject, scrollDownEnabled, scrollDownAmount) {
+    loop {
+        SendInput ("{Tab}")
+        enteringMap := false
+        captchaSolved := false
+        randomMapDetection := false
+        exitLoop := 0
+        loop {
+            ; Attempts to detect the map name. If it doesn't find any, the default mapName is "UnkownMap"
+            if (enteringMap) {
+                if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, mapObject.MapImage))
+                    {
+                        break ; break for loop
+                    }
+            }
+            ; I opted to use loop until because there's roughly 30 or so seconds when you are waiting in the room if not match making.
+            ; because of this I need to do the for loop above all over again to constantly check the loading screen.
+            ; only when the votestart is detected will the loop exit
+            if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
+                AddToLog("Found VoteStart, stopping loop")
+                exitLoop := 1
+            }
+    
+            Sleep 100
+            
+            if(enteringMap == true || captchaSolved == true) {
+                continue
+            }
+            
+                BetterClick(89, 302)
+                Sleep 2000
+                SendInput ("{d down}")
+                Sleep 3500
+                SendInput ("{d up}")
+                Sleep 100
+                SendInput ("{w down}")
+                Sleep 5000
+                SendInput ("{w up}")
+                KeyWait "w"
+                Sleep 2000
+                BetterClick(710, 133) ; click legend stages
+                Sleep 1000
+                if (scrollDownEnabled) {
+                    MouseMove(730, 245)
+                    Sleep 100
+                    loop scrollDownAmount {
+                        Sleep 1000
+                        SendInput("{WheelDown 1}") ; scroll
+                    }
+                }
+                Sleep 1000
+                BetterClick(x1, y1) ; click the legend stage you want
+                Sleep 1000
+                BetterClick(x2, y2) ; click legend stage/act
+                Sleep 1000
+                BetterClick(405, 440) ; click select
+                Sleep 1200
+                if (matchMakingEnabled) {
+                    BetterClick(469, 340) ; play (matchmaking mode)
+                    Sleep 2000
+                    captchaSolved := AntiCaptcha()
+                    AddToLog("returned from anti captcha")
+                    if (captchaSolved == true) {
+                        enteringMap := true
+                    } else {
+                        Sleep 30000
+                    }
+                } else {
+                    BetterClick(340, 320) ; play (non-matchmaking mode)
+                    Sleep 2000
+                    BetterClick(415, 450) ; click start
+                }
+                Sleep 2000
+                if !(matchMakingEnabled) {
+                    enteringMap := true
+                }
+    
+        } until (exitLoop) ; end inner loop
+
+        MapPlacementInstructions(mapName, true, randomMapDetection)
+        LobbyLoop() ; if not replaying
+    } ; end outer loop
+}
+
+; AFK timer kicks in after 20 mins, need to click so the player stays in game
+; Need a way to detect if the player is actually in the room (via image detection)
+; Time to sleep for 19 mins, and then click once, and then sleep for another 10 mins
+GoToChallenges() {
+    loop {
+        mapName := "UnknownMap"
+        SendInput ("{Tab}")
+        randomMapDetection := true
+        enteringMap := false
+        captchaSolved := false
+        enteredRoom := 0
+        exitLoop := 0
+        loop {
+    
+            ; Attempts to detect the map name. If it doesn't find any, the default mapName is "UnkownMap"
+            if (enteringMap) {
+                for map in storyMaps {
+                    if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, map.MapImage))
+                    {
+                        mapName := map.Name  ; Save the detected map name  
+                        exitLoop := 1
+                        break ; break for loop
+                    }
+                }
+            }
+            ; I opted to use loop until because there's roughly 30 or so seconds when you are waiting in the room if not match making.
+            ; because of this I need to do the for loop above all over again to constantly check the loading screen.
+            ; only when the votestart is detected will the loop exit
+            if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
+                AddToLog("Found VoteStart, stopping loop")
+                exitLoop := 1
+            }
+
+            Sleep 100 
+            if (enteredRoom = true) {
+                continue
+            }
+            
+            BetterClick(770, 470) ; Click areas
+            Sleep 750
+            BetterClick(280, 410) ; Click Challenges
+            Sleep 1000
+            SendInput ("{d down}")
+            Sleep 2000
+            SendInput("{d up}")
+            SendInput ("{s down}")
+            Sleep 6000
+            SendInput ("{s up}")
+            KeyWait "s"
+            if (ok:=FindText(&X, &Y, 373, 547, 498, 596, 0, 0, ChallengeRoomCancelButton))
+            {
+                AddToLog("Entered room")
+                enteredRoom := 1
+                enteringMap := true
+            }
+        } until (exitLoop) ; end inner loop
+
+        MapPlacementInstructions(mapName, true, true)
+        LobbyLoop() ; if not replaying
+        Sleep 5000
+        ; Sleep 1140000
+        ; BetterClick(300, 300) ; Anti AFK click
+        ; Sleep 630000
+    } ; end outer loop
 }
 
 StopMacro() {
@@ -169,6 +613,96 @@ StopMacro() {
     }
     Reload()
 }
+
+; This function here is needed for MapPlacementInstructions in case the user decides
+; to select the ability to replay instead of go to lobby
+DetectMapName() {
+    for map in storyMaps {
+        if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, map.MapImage))
+            {
+              return map.Name
+            }
+    }
+    return "UnknownMap"
+}
+
+MapPlacementInstructions(mapName, firstTimeCalling, randomMapDetection) {
+    loop {
+        ; If it's the first time calling MapPlacement, then DetectMapName() has more than likely already been done.
+        ; This if statement is to reduce redundancy so you don't do the equivelent of DetectMapName all over again.
+        ; This is needed because if a user selects the option of Replay instead of go to lobby (for gamemodes like infinity castle),
+        ; It can detect the map name here again, rather then going back to the "GoToGameMode" functions
+        if (!firstTimeCalling && randomMapDetection) {
+            AddToLog("Attempting to detect map name...")
+            Sleep 2300
+            mapName := DetectMapName()
+        }
+        AddToLog("Using detected map name: " mapName)
+    
+        ; Create a Map object
+        mapClasses := Map()
+        mapClasses["UnknownMap"] := BaseMap()
+        mapClasses["MountainTemple"] := MountainTemple() ; *
+        mapClasses["SnowyTown"] := SnowyTown() ; *
+        mapClasses["AntKingdom"] := AntKingdom() ; *
+        mapClasses["MagicTown"] := MagicTown() ; *
+        mapClasses["MagicHills"] := MagicHills() ; *
+        mapClasses["DungeonThrone"] := DungeonThrone()
+        mapClasses["NightmareTrain"] := NightmareTrain()
+        mapClasses["RainVillage"] := RainVillage()
+        ;mapClasses["SandVillage"] := SandVillage() ; **
+        ; mapClasses["HauntedAcademy"] := HauntedAcademy() ; **
+        ; mapClasses["SpaceCenter"] := SpaceCenter() ; **
+        ; mapClasses["NavyBay"] := NavyBay()
+        ; mapClasses["FiendCity"] := FiendCity()
+        ; mapClasses["SpiritWorld"] := SpiritWorld()
+        ; mapClasses["AlienSpaceship"] := AlienSpaceship()
+        ; mapClasses["FabledKingdom"] := FabledKingdom()
+        ; mapClasses["RuinedCity"] := RuinedCity()
+        ; mapClasses["PuppetIsland"] := PuppetIsland()
+        ; mapClasses["VirtualDungeon"] := VirtualDungeon()
+        ; mapClasses["SnowyKingdom"] := SnowyKingdom()
+        ; mapClasses["PlanetGreenie"] := PlanetGreenie()
+
+        
+        ; Loop over mapClasses to find the selected map
+        selectedMap := ""
+        for key, value in mapClasses {
+            if (key = mapName) {
+                selectedMap := value
+                break  ; Exit loop once the map is found
+            }
+        }
+    
+        if (selectedMap = "") {
+            AddToLog("UnknownMap")
+            selectedMap := mapClasses["UnknownMap"]
+        }
+        
+        ; Run instructions for the selected map
+        LoadedLoop()
+        AddToLog("Entering Started Loop")
+        StartedLoop()
+        AddToLog("Entering On spawn setup")
+        selectedMap.OnSpawnSetupGlobal
+        AddToLog("entering run instructions")
+        selectedMap.RunInstructions
+        AddToLog("placing units")
+        selectedMap.TryPlacingUnits
+        AddToLog("returned to MapPlacemenInstructions")
+        firstTimeCalling := false
+
+        if !(backToLobbyEnabled) {
+            continue
+        } 
+
+        break ; break out of loop if replaying is disabled.
+
+    }
+    return ; return to GoToGamemode functions
+}
+
+
 ; Define the rectangle coordinates
 global startX := 100, startY := 500, endX := 700, endY := 350
 global startY2 := 200, endY2 := 350
@@ -210,9 +744,9 @@ IsPlacementSuccessful() {
 
 CannotPlaceUnits() {
     global CannotPlaceUnitsArr ; Pretty sure this line here isin't needed but it works so I'm leaving it
-    AddToLog("Entered Cannot Place Units")
     for index, placementAmount in CannotPlaceUnitsArr {
         if (ok := FindText(&X, &Y, 154, 478, 700, 531, 0, 0, placementAmount)) {
+            AddToLog("Found could not place unit")
             return true
         }
     }
@@ -258,6 +792,7 @@ SpiralPlacement(gridPlacement := false) {
     dirIndex := 0
     directionCount := 0
 
+    
     ; Iterate through all slots (1 to 6)
     for slotNum in [1, 2, 3, 4, 5, 6] {
         enabled := "Enabled" slotNum
@@ -266,28 +801,34 @@ SpiralPlacement(gridPlacement := false) {
         placements := "Placement" slotNum
         placements := %placements%
         placements := placements.Text
-
+        
         ; Skip if the slot is not enabled
         if !(enabled = 1) {
             continue
         }
-
+        
         AddToLog("Starting placements for Slot " slotNum " with " placements " placements.")
-
+        
         placementCount := 0
         currentX := centerX
         currentY := centerY
         steps := 30
         maxSteps := 5
         exitLoops := false
+<<<<<<< HEAD
 
         while (placementCount < placements) {
             if(exitLoops) {
+=======
+        
+        while (placementCount < placements) {
+            if (exitLoops) {
+>>>>>>> BranchTesting
                 break
             }
             for index, stepSize in [steps] {
-
                 if PlaceUnit(currentX, currentY, slotNum) {
+                    AddToLog("Trying to plce unit")
                     placementCount++
                     successfulCoordinates.Push({ x: currentX, y: currentY, slot: "slot_" slotNum }) ; Track successful placements
                     try {
@@ -309,7 +850,11 @@ SpiralPlacement(gridPlacement := false) {
                 }
 
                 if(CannotPlaceUnits()) {
+<<<<<<< HEAD
                     exitLoops := true
+=======
+                    exitLoops := true ; Set flag to break out of all loops
+>>>>>>> BranchTesting
                     break
                 }
 
@@ -325,8 +870,8 @@ SpiralPlacement(gridPlacement := false) {
                 BetterClick(348, 391) ; next
                 BetterClick(565, 563) ; move mouse
                 if ShouldStopUpgrading(1) {
-                    AddToLog("Stopping due to finding lobby  condition.")
-                    return LobbyLoop()
+                    AddToLog("Stopping due to finding lobby condition. Returning from SpiralPlacement")
+                    return ; Go back to MapPlacementInstructions or TryPlacingUnits
                 }
                 Reconnect()
 
@@ -358,8 +903,8 @@ SpiralPlacement(gridPlacement := false) {
 
             dirIndex := Mod(dirIndex + 1, 4)
             if ShouldStopUpgrading(1) {
-                AddToLog("Stopping due to lobby condition.")
-                return LobbyLoop()
+                AddToLog("Stopping due to finding lobby condition. Returning from SpirePlacement")
+                return ; Go back to MapPlacementInstructions or TryPlacingUnits
             }
         }
 
@@ -367,8 +912,8 @@ SpiralPlacement(gridPlacement := false) {
     }
 
     UpgradeUnits()
-
-    AddToLog("All slot placements and upgrades completed.")
+    AddToLog("Returned from UpgradeUnits.")
+    return ; Go back to MapPlacementInstructions or TryPlacingUnits
 }
 
 ; The OG placement by @Original author of macro
@@ -381,6 +926,7 @@ LinePlacement() {
     y := startY ; Initialize y only once
     y2 := startY2 ; Initialize y2 only once
 
+    
     ; Iterate through all slots (1 to 6)
     for slotNum in [1, 2, 3, 4, 5, 6] {
         enabled := "Enabled" slotNum
@@ -389,14 +935,14 @@ LinePlacement() {
         placements := "Placement" slotNum
         placements := %placements%
         placements := placements.Text
-
+        
         ; Skip if the slot is not enabled
         if !(enabled = 1) {
             continue
         }
-
+        
         AddToLog("Starting placements for Slot " slotNum " with " placements " placements.")
-
+        
         placementCount := 0
         alternatingPlacement := 0
         exitLoops := false
@@ -415,7 +961,11 @@ LinePlacement() {
                 }
 
                 if(CannotPlaceUnits()) {
+<<<<<<< HEAD
                     exitLoops := true
+=======
+                    exitLoops := true ; Set flag to break out of all loops
+>>>>>>> BranchTesting
                     break
                 }
 
@@ -427,7 +977,11 @@ LinePlacement() {
                 }
 
                 if(CannotPlaceUnits()) {
+<<<<<<< HEAD
                     exitLoops := true
+=======
+                    exitLoops := true ; Set flag to break out of all loops
+>>>>>>> BranchTesting
                     break
                 }
 
@@ -444,8 +998,8 @@ LinePlacement() {
                 BetterClick(348, 391) ; next
                 BetterClick(565, 563) ; move mouse
                 if ShouldStopUpgrading(1) {
-                    AddToLog("Stopping due to finding lobby  condition.")
-                    return LobbyLoop()
+                    AddToLog("Stopping due to finding lobby condition. Returning from LinePlaceMent")
+                    return ; Go back to MapPlacementInstructions or TryPlacingUnits
                 }
                 Reconnect()
                 x += step - 20 ; Move to the next column
@@ -469,8 +1023,8 @@ LinePlacement() {
     }
 
     UpgradeUnits()
-
-    AddToLog("All slot placements and upgrades completed.")
+    AddToLog("Returned from UpgradeUnits.")
+    return ; Go back to MapPlacementInstructions or TryPlacingUnits
 }
 
 ; Modified version of LinePlaceMent, placing in a 2x2 grid when a unit is placed,then goes back to line placing
@@ -480,11 +1034,11 @@ LinePlacementGrid() {
     successfulCoordinates := [] ; Reset successfulCoordinates for each run
     maxedCoordinates := []
     savedPlacements := Map()
-
     x := startX ; Initialize x only once
     y := startY ; Initialize y only once
     y2 := startY2 ; Initialize y2 only once
 
+    
     ; Iterate through all slots (1 to 6)
     for slotNum in [1, 2, 3, 4, 5, 6] {
         enabled := "Enabled" slotNum
@@ -493,21 +1047,25 @@ LinePlacementGrid() {
         placements := "Placement" slotNum
         placements := %placements%
         placements := placements.Text
-
+        
         ; Skip if the slot is not enabled
         if !(enabled = 1) {
             continue
         }
-
+        
         AddToLog("Starting placements for Slot " slotNum " with " placements " placements.")
-
+        
         placementCount := 0
         alternatingPlacement := 0
         exitLoops := false
 
         ; Continue placement for the current slot
         while (placementCount < placements && y >= endY && y2 <= endY2) { ; Rows
+<<<<<<< HEAD
             if(exitLoops) {
+=======
+            if(exitLoops){
+>>>>>>> BranchTesting
                 break
             }
             while (placementCount < placements && x <= endX) { ; Columns
@@ -533,7 +1091,11 @@ LinePlacementGrid() {
                     }
 
                     if(CannotPlaceUnits()) {
+<<<<<<< HEAD
                         exitLoops := true
+=======
+                        exitLoops := true ; Set flag to break out of all loops
+>>>>>>> BranchTesting
                         break
                     }
                     
@@ -561,7 +1123,11 @@ LinePlacementGrid() {
                     }
 
                     if(CannotPlaceUnits()) {
+<<<<<<< HEAD
                         exitLoops := true
+=======
+                        exitLoops := true ; Set flag to break out of all loops
+>>>>>>> BranchTesting
                         break
                     }
 
@@ -579,8 +1145,8 @@ LinePlacementGrid() {
                 BetterClick(348, 391) ; next
                 BetterClick(565, 563) ; move mouse
                 if ShouldStopUpgrading(1) {
-                    AddToLog("Stopping due to finding lobby  condition.")
-                    return LobbyLoop()
+                    AddToLog("Stopping due to finding lobby condition. Returning from LinePlacement")
+                    return ; Go back to MapPlacementInstructions or TryPlacingUnits
                 }
                 Reconnect()
                 x += step - 20 ; Move to the next column
@@ -604,8 +1170,8 @@ LinePlacementGrid() {
     }
 
     UpgradeUnits()
-
-    AddToLog("All slot placements and upgrades completed.")
+    AddToLog("Returned from UpgradeUnits.")
+    return ; Go back to MapPlacementInstructions or TryPlacingUnits
 }
 
 ; Places units in a zig-zag pattern
@@ -670,7 +1236,9 @@ ZigZagPlacement(gridPlacement := false) {
                 }
 
                 if (gridPlacement) {
-                    PlaceInGrid(x, y, slotNum, &placementCount, &successfulCoordinates, &savedPlacements, &placements)
+                    if(PlaceInGrid(x, y, slotNum, &placementCount, &successfulCoordinates, &savedPlacements, &placements)) {
+                        return
+                    }
                 }
 
             }
@@ -692,8 +1260,8 @@ ZigZagPlacement(gridPlacement := false) {
             BetterClick(348, 391) ; next
             BetterClick(565, 563) ; move mouse
             if ShouldStopUpgrading(1) {
-                AddToLog("Stopping due to finding lobby  condition.")
-                return LobbyLoop()
+                AddToLog("Stopping due to finding lobby condition. Returning from ZigZagPlacement")
+                return ; Go back to MapPlacementInstructions or TryPlacingUnits
             }
             Reconnect()
             
@@ -734,7 +1302,8 @@ ZigZagPlacement(gridPlacement := false) {
         Reconnect()
     } ; End For
     UpgradeUnits()
-    AddToLog("All slot placements and upgrades completed.")
+    AddToLog("Returned from UpgradeUnits.")
+    return ; Go back to MapPlacementInstructions or TryPlacingUnits
 }
 
 ; Algorithm that's used in LinePlacement. Is a helper function. Attempts to place units in a 2x2 grid once an initial unit has been placed.
@@ -753,7 +1322,6 @@ PlaceInGrid(startX, startY, slotNum, & placementCount, & successfulCoordinates, 
        [30, 30]   ; Row 1, Column 1
    ]
    for index, offset in gridOffsets {
-
        ; Adds the value that's stored in the array at the current index to either x or y's starting location 
        gridX := startX + offset[2] ; Move horizontally by 'step' from the initial start location
        gridY := startY + offset[1] ; Move vertically by 'step' from the initial start location
@@ -773,33 +1341,34 @@ PlaceInGrid(startX, startY, slotNum, & placementCount, & successfulCoordinates, 
        BetterClick(565, 563) ; move mouse
        if ShouldStopUpgrading(1) {
            AddToLog("Stopping due to finding lobby condition.")
-           return LobbyLoop()
+           return true ;Go back to Placement Types
        }
        Reconnect()
 
-       if PlaceUnit(gridX, gridY, slotNum) {
-           placementCount++ ; Increment the placement count
-           successfulCoordinates.Push({ x: gridX, y: gridY, slot: "slot_" slotNum }) ; Track the placement
-           ;AddToLog("Placed unit at (" gridX ", " gridY ") in 2x2 grid.")
+        if PlaceUnit(gridX, gridY, slotNum) {
+            placementCount++ ; Increment the placement count
+            successfulCoordinates.Push({ x: gridX, y: gridY, slot: "slot_" slotNum }) ; Track the placement
+            AddToLog("Placed unit at (" gridX ", " gridY ") in 2x2 grid.")
+            
+            ; Update or initialize saved placements for the current slot
+            try {
+                if savedPlacements.Get("slot_" slotNum) {
+                    savedPlacements.Set("slot_" slotNum, savedPlacements.Get("slot_" slotNum) + 1)
+                }
+            } catch {
+                savedPlacements.Set("slot_" slotNum, 1)
+            }
 
-           ; Update or initialize saved placements for the current slot
-           try {
-               if savedPlacements.Get("slot_" slotNum) {
-                   savedPlacements.Set("slot_" slotNum, savedPlacements.Get("slot_" slotNum) + 1)
-               }
-           } catch {
-               savedPlacements.Set("slot_" slotNum, 1)
-           }
+            ; Check if placement limit is reached
+            if placementCount >= placements {
+                break
+            }
 
-           ; Check if placement limit is reached
-           if placementCount >= placements {
-               break
-           }
 
-       }
+        }
 
    } ; End for
-
+   return false
 }
 
 ; Add placement options here
@@ -820,6 +1389,7 @@ TryPlacingUnits() {
         default:
             AddToLog("Invalid selection")
     }
+    return ; Go back to Gamemodes
 }
 
 IsMaxed(coord) {
@@ -858,10 +1428,10 @@ UpgradeUnits() {
                     break
                 }
                 if ShouldStopUpgrading() {
-                    AddToLog("Found return to lobby, going back.")
+                    AddToLog("Stopping due to finding return to lobby/replay button.")
                     successfulCoordinates := []
                     maxedCoordinates := []
-                    return LobbyLoop()
+                    return ; return to calling PlacementFunction
                 }
 
                 Sleep(200)
@@ -896,7 +1466,8 @@ UpgradeUnits() {
             }
         }
 
-        return LobbyLoop()
+        return ; return to calling PlacementFunction
+
     }
     else
     {
@@ -911,10 +1482,10 @@ UpgradeUnits() {
                 UpgradeUnit(coord.x, coord.y)
 
                 if ShouldStopUpgrading() {
-                    AddToLog("Found return to lobby, going back.")
+                    AddToLog("Stopping due to finding return to lobby/replay button.")
                     successfulCoordinates := []
                     maxedCoordinates := []
-                    return LobbyLoop()
+                    return ; return to calling PlacementFunction
                 }
 
                 if IsMaxUpgrade() {
@@ -951,15 +1522,15 @@ UpgradeUnits() {
                 }
                 BetterClick(348, 391) ; next
                 if ShouldStopUpgrading() {
-                    AddToLog("Stopping due to finding return to lobby button.")
-                    return LobbyLoop()
+                    AddToLog("Stopping due to finding return to lobby/replay button.")
+                    return ; return to calling PlacementFunction
                 }
                 Sleep(2000) ; Prevent excessive looping
 
             }
 
             Reconnect()
-        }
+        } ; End While
     }
 }
 
@@ -1068,15 +1639,29 @@ IsMaxUpgrade() {
 
 ShouldStopUpgrading(sleepamount := 300) {
     Sleep sleepamount
+
     if CheckForLobbyButton() {
         if (WebhookCheckbox.Value = 1) {
             SendInput ("{Tab}")
             Sleep 100
             SendWebhook()
         }
-        BetterClick(376, 117)
+
+        if (backToLobbyEnabled) {
+            if (currentGameMode == "challenges") {
+                AddToLog("Challenge button detected to click")
+                BetterClick(400, 117) ; Back to Lobby
+            } else {
+                BetterClick(376, 117) ; Back to Lobby
+            }
+        } else {
+            BetterClick(540, 117) ; Replay
+        }
+
+        AddToLog("Should Stop Upgrading returned true")
         return true
     }
+
 }
 
 FindAndClickColor(targetColor := 0x006783, searchArea := [0, 0, A_ScreenWidth, A_ScreenHeight]) {
@@ -1137,7 +1722,10 @@ LoadedLoop() {
             BetterClick(350, 100) ; click yes
             BetterClick(350, 97) ; click yes
             Sleep 200
-            BetterClick(590, 15) ; click on P
+            if(currentGameMode == "christmasEvent" || "default") {
+                BetterClick(590, 15) ; click on P
+            }
+            
             break
         }
         /*else if (ok := FindText(&X, &Y, 694 - 150000, 66 - 150000, 694 + 150000, 66 + 150000, 0, 0, P2))
@@ -1167,7 +1755,9 @@ LoadedLoop() {
                 BetterClick(350, 100) ; click yes
                 BetterClick(350, 97) ; click yes
                 Sleep 200
-                BetterClick(590, 15) ; click on P
+                if(currentGameMode == "christmasEvent" || "default") {
+                    BetterClick(590, 15) ; click on P
+                }
                 break
             }
         }
@@ -1202,13 +1792,19 @@ LobbyLoop() {
         }
         Reconnect()
     }
-    AddToLog("Returned to lobby, going back to raids")
-    return GoToRaids()
+    AddToLog("Returning to lobby, going back to gamemode")
+    return
 }
 
 CheckForLobbyButton() {
     if (ok := FindText(&X, &Y, 273, 103, 482, 214, 0, 0, LobbyText))
     {
+        return true
+    }
+    ; This is here for challenges since the button is different
+    if (ok:=FindText(&X, &Y, 345, 137, 524, 196, 0, 0, BackToLobbyNoReplayButton))
+    {
+        AddToLog("Challenge button detected")
         return true
     }
 }
@@ -1239,7 +1835,7 @@ TPtoSpawn() {
         SendInput("{WheelDown 1}") ; scroll
     }
     Sleep 600
-    BetterClick(523, 271) ; tp to spawn
+    BetterClick(523, 320) ; tp to spawn
     Sleep 600
     BetterClick(582, 150) ; exit settings
 
@@ -1291,7 +1887,7 @@ AntiCaptcha() {
         if (StrLen(captcha) <= 1 || RegExMatch(captcha, "[A-Za-z]")) {
             AddToLog("invalid captcha retrying")
             BetterClick(584, 192) ; close captcha
-            return
+            return false
         }
 
         ; Remove special characters like /, -, and .
@@ -1305,12 +1901,15 @@ AntiCaptcha() {
         ;}
     } else {
         AddToLog("NO CAPTCHA FOUND.")
+        return false
     }
-
     BetterClick(309, 386) ; select
     Sleep 1500
     BetterClick(383, 221)
     Sleep 500
+    if (currentGameMode == "halloweenEvent") {
+        return true
+    }
 
     sleep 6000
     if (ok := FindText(&X, &Y, 10, 70, 350, 205, 0, 0, LoadingScreen)) {
@@ -1410,7 +2009,7 @@ Reconnect() {
             if (ok := FindText(&X, &Y, 746, 476, 862, 569, 0, 0, AreasText)) {
                 AddToLog("Reconnected Succesfully!")
                 hasReconnect := 1
-                return GoToRaids() ; Check for challenges in the lobby
+                return GameModes[currentGameMode].Call() ; Call the current gamemode function again. This does increase the call stack size, but oh well.
             }
             else {
                 Reconnect()

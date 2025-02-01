@@ -73,6 +73,12 @@ SendChatBttn.OnEvent("Click", (*) => OpenPriorityPicker())
 SendChatBttn := MainSettings.Add("Button", "x220 y170 w150", "Placement Logic")
 SendChatBttn.OnEvent("Click", (*) => OpenPlacementLogic())
 
+SendChatBttn := MainSettings.Add("Button", "x30 y230 w150", "Gamemodes")
+SendChatBttn.OnEvent("Click", (*) => OpenGamemodeUI())
+
+SendChatBttn := MainSettings.Add("Button", "x220 y230 w150", "Playing Options")
+SendChatBttn.OnEvent("Click", (*) => OpenPlayingOptionsUI())
+
 global PlacementLogicUI := Gui("+AlwaysOnTop")
 PlacementLogicUI.SetFont("s10 bold", "Segoe UI")
 PlacementLogicUI.BackColor := "0c000a"
@@ -90,6 +96,94 @@ global PlacementDropdown := PlacementLogicUI.Add("DropDownList", "x10 y60  w250 
 OpenPlacementLogic() {
     PlacementLogicUI.Show()
 }
+
+;*************GAMEMODE UI*************
+GamemodeUI := Gui("+AlwaysOnTop")
+GamemodeUI.SetFont("s10", "Comic Sans MS")
+GamemodeUI.BackColor := "0c6294"
+GamemodeUI.MarginX := 20
+GamemodeUI.MarginY := 20
+; Placeholder for gamemode information
+global GamemodeInfoText := GamemodeUI.Add("Text", "x10 y10 w300 h200 cWhite Wrap", "Select a gamemode to see its details")
+
+global GamemodeDropdown := GamemodeUI.Add("DropDownList", "x10 y170 Border w250 cffffff Choose1", 
+["Infinity Castle", "Halloween Event", "Christmas Event", 
+"Magic Hills Legend 1", "Magic Hills Legend 2", "Magic Hills Legend 3",
+"Rain Village Legend 1", "Rain Village Legend 2", "Rain Village Legend 3", 
+"Infinite Mode Unit XP", "Challenges"])
+
+; Define gamemode descriptions
+global GamemodeDescriptions := Map()
+GamemodeDescriptions["Infinity Castle"] := "Ain't nobody got time for 100 floors. Replay option recommended. Automatically detects map name and runs movement instructions based on the map."
+GamemodeDescriptions["Halloween Event"] := "SPOOOOOOKKYYYY OOOOOOOOO"
+GamemodeDescriptions["Christmas Event"] := "YOU WILL NEVER GET AIZEN AHAHHAHAHA. Recomend matchmaking. Solo play possible and replay."
+GamemodeDescriptions["Infinite Mode Unit XP"] := "Give XP food for your units. Bring ONLY erwin and set placement to ONLY 1. Recomend lvl 100. XP food given after wave 10. Up unit placements if you don't make it to wave 10. Uses magic hills map."
+GamemodeDescriptions["Challenges"] := "Auto do the challenges every 30 minutes."
+GamemodeDescriptions["Magic Hills Legend 1"] := "Contains items Holy Spring, Magic Scroll, Fairy Wings, Fairy Circlet, Wind Splinter."
+GamemodeDescriptions["Magic Hills Legend 2"] := "Contains items Holy Spring, Magic Scroll, Demonic Tail, Demonic Skull, Demonic Horns."
+GamemodeDescriptions["Magic Hills Legend 3"] := "Select this if you want to limit break. Time wizard only requires the material earned here to evo. Evoed units count as 2 when limit breaking. Map reward contains Devil Heart & Lost chapter"
+GamemodeDescriptions["Rain Village Legend 1"] := "Contains red scrolls. Aqua and light element buffs."
+GamemodeDescriptions["Rain Village Legend 2"] := "Contains blue scrolls. Fire and rose element buffs."
+GamemodeDescriptions["Rain Village Legend 3"] := "Contains green scrolls, dark and storm element buffs."
+
+GamemodeDropdown.OnEvent("Change", (*) => UpdateGamemodeInfo())
+
+; Function to update the info text
+UpdateGamemodeInfo() {
+    global GamemodeDropdown, GamemodeInfoText, GamemodeDescriptions
+    GamemodeInfoText.Text := GamemodeDescriptions[GamemodeDropdown.Text]
+}
+
+OpenGamemodeUI() {
+    GamemodeUI.Show()
+}
+;*************END GAMEMODE UI*************
+
+;*************PLAYING OPTIONS*************
+PlayingOptionsUI := Gui("+AlwaysOnTop")
+PlayingOptionsUI.SetFont("s10", "Comic Sans MS")
+PlayingOptionsUI.BackColor := "0c6294"
+PlayingOptionsUI.MarginX := 20
+PlayingOptionsUI.MarginY := 20
+
+global PlayingOptionsInfoText := PlayingOptionsUI.Add("Text", "x10 y10 w300 h150 cWhite Wrap", "Select if you want to replay or matchmake")
+
+; Checkboxes for playing options
+global MatchmakeCheckBox := PlayingOptionsUI.Add("CheckBox", "x10 y100 w200 cWhite", "Matchmake")  ; Checkbox for Matchmake
+global ReplayCheckBox := PlayingOptionsUI.Add("CheckBox", "x10 y140 w200 cWhite", "Back to lobby")  ; Checkbox for Replay
+
+MatchmakeCheckBox.OnEvent("Click", (*) => CheckMatchmake())
+ReplayCheckBox.OnEvent("Click", (*) => CheckReplay())
+
+; Functions to handle the checkbox logic
+CheckReplay() {
+    global backToLobbyEnabled
+    If (ReplayCheckBox.Value) {
+        ; If Replay is selected, disable Back to Lobby
+        backToLobbyEnabled := 1
+        AddToLog("Back to Lobby enabled")
+    } else {
+        ; If Replay is unchecked, enable Back to Lobby
+        backToLobbyEnabled := 0
+        AddToLog("Back to Lobby disabled")
+    }
+}
+
+CheckMatchmake() {
+    global matchMakingEnabled
+    If (MatchmakeCheckBox.Value) {
+        matchMakingEnabled := 1
+        AddToLog("Matchmake enabled")
+    } else {
+        matchMakingEnabled := 0
+        AddToLog("Matchmake disabled")
+    }
+}
+
+OpenPlayingOptionsUI(){
+    PlayingOptionsUI.Show()
+}
+;*************END PLAYING OPTIONS*************
 
 ; Show the main settings GUI
 ; Show the initial GUI
