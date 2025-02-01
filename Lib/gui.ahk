@@ -110,7 +110,8 @@ global GamemodeDropdown := GamemodeUI.Add("DropDownList", "x10 y170 Border w250 
 ["Infinity Castle", "Halloween Event", "Christmas Event", 
 "Magic Hills Legend 1", "Magic Hills Legend 2", "Magic Hills Legend 3",
 "Rain Village Legend 1", "Rain Village Legend 2", "Rain Village Legend 3", 
-"Infinite Mode Unit XP", "Challenges"])
+"Infinite Mode Unit XP", "Challenges", "Contracts Tier 1-3",
+"Contracts Tier 4-6", "Contracts Tier 7-12"])
 
 ; Define gamemode descriptions
 global GamemodeDescriptions := Map()
@@ -125,6 +126,9 @@ GamemodeDescriptions["Magic Hills Legend 3"] := "Select this if you want to limi
 GamemodeDescriptions["Rain Village Legend 1"] := "Contains red scrolls. Aqua and light element buffs."
 GamemodeDescriptions["Rain Village Legend 2"] := "Contains blue scrolls. Fire and rose element buffs."
 GamemodeDescriptions["Rain Village Legend 3"] := "Contains green scrolls, dark and storm element buffs."
+GamemodeDescriptions["Contracts Tier 1-3"] := "Selects the first available contract. Random map detection enabled."
+GamemodeDescriptions["Contracts Tier 4-6"] := "Selects the second available contract. Random map detection enabled."
+GamemodeDescriptions["Contracts Tier 7-12"] := "Selects the second available contract. Random map detection disabled."
 
 GamemodeDropdown.OnEvent("Change", (*) => UpdateGamemodeInfo())
 
