@@ -920,15 +920,9 @@ SpiralPlacement(gridPlacement := false) {
         steps := 30
         maxSteps := 5
         exitLoops := false
-<<<<<<< HEAD
-
-        while (placementCount < placements) {
-            if(exitLoops) {
-=======
         
         while (placementCount < placements) {
             if (exitLoops) {
->>>>>>> BranchTesting
                 break
             }
             for index, stepSize in [steps] {
@@ -955,11 +949,7 @@ SpiralPlacement(gridPlacement := false) {
                 }
 
                 if(CannotPlaceUnits()) {
-<<<<<<< HEAD
-                    exitLoops := true
-=======
                     exitLoops := true ; Set flag to break out of all loops
->>>>>>> BranchTesting
                     break
                 }
 
@@ -1066,11 +1056,7 @@ LinePlacement() {
                 }
 
                 if(CannotPlaceUnits()) {
-<<<<<<< HEAD
-                    exitLoops := true
-=======
                     exitLoops := true ; Set flag to break out of all loops
->>>>>>> BranchTesting
                     break
                 }
 
@@ -1082,11 +1068,7 @@ LinePlacement() {
                 }
 
                 if(CannotPlaceUnits()) {
-<<<<<<< HEAD
-                    exitLoops := true
-=======
                     exitLoops := true ; Set flag to break out of all loops
->>>>>>> BranchTesting
                     break
                 }
 
@@ -1166,11 +1148,7 @@ LinePlacementGrid() {
 
         ; Continue placement for the current slot
         while (placementCount < placements && y >= endY && y2 <= endY2) { ; Rows
-<<<<<<< HEAD
-            if(exitLoops) {
-=======
             if(exitLoops){
->>>>>>> BranchTesting
                 break
             }
             while (placementCount < placements && x <= endX) { ; Columns
@@ -1196,11 +1174,7 @@ LinePlacementGrid() {
                     }
 
                     if(CannotPlaceUnits()) {
-<<<<<<< HEAD
-                        exitLoops := true
-=======
                         exitLoops := true ; Set flag to break out of all loops
->>>>>>> BranchTesting
                         break
                     }
                     
@@ -1228,11 +1202,7 @@ LinePlacementGrid() {
                     }
 
                     if(CannotPlaceUnits()) {
-<<<<<<< HEAD
-                        exitLoops := true
-=======
                         exitLoops := true ; Set flag to break out of all loops
->>>>>>> BranchTesting
                         break
                     }
 
