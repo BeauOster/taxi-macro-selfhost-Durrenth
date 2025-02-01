@@ -38,7 +38,8 @@ P2 := "|<>*102$165.1zzzs000Dzzz0003zzzk000zzzw0zzzzk007zzzy001zzzzU00TzzzsDzzzz0
 Priority := "|<>*92$70.zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzs0000000000T00000000000s00000000001U0000000000600000000000M007zs000001U01zwU07U0060060200m000M00E1DvuA001U017zysss0060043W110U00M00E68442001U010MXkss006004TWD1X000M00Fu8x2C001U0168XUQ8006006En/1kU00M00D1zbxy001U0000870U00600000000000M00000000001k0000000000DU0000000001zzzzzzzzzzzzU"
 ChallengeRoomCancelButton:="|<>**50$71.0000000000000000000000000000000000000M00000003s07y0000000Ds0zz0000000Mk3U70000000lUC060000001X0M0Bzzz3yDx61VzzzzzDzzyA37zs1W7s7UQM6A1U307UC0MkAM606060MMFUMkAQASATlsX0lnswMwMzU361Vzlslslz0CC1VtVVXFVaDwS3U1U36XUA0MA3U706B70Q0kE3kzaSPDVy3sk3znzzbnzDyz00Y08420k7k8000000000000000000000000000000000000000000000000000000000004"
 BackToLobbyNoReplayButton:="|<>**50$154.000000000000000000000000000000000000000000000000000000000000000000000000000000y000000000000007k0DUT0000Dz007U000000D000zU1z3y0001kC00z0000001y003606AAM00060A06A000000AM00AM0MklU000M0MwMtklrCs0lkS0lVtXX71kk1XljzXzjzzzs77by36TyDgTDbk6D7kw1bnaAlkM3sQAPVsblDanUMwQ1k6/C0k31UC0slM3U70CD61XlU30Mgs30660k1X5060A0Mss606CCDWnXwAMQT76AQQMMkllX0M0sssm/CDltUlgSAllsXn7b6A1U3U6X8wsn5a36lsn77WDASS1U6D6DuDVXXAKMAT76AQQMMkls60MwMNcD0CAlNUEQ0Mkk1U306kk1XFk2kw0sn5a1Vs3X1UC0Q0nX06RbkPnQnbAqM7asQ7DVtbnDAM0DbnzbwzzsTTUDtzUDryztzklU0843s30120E8061k0A70W146A000000000000000000000000Mk000000000000000000000001X0000000000000000000000003s00000000000000000000000070000000000000000000000000008"
-
+OpenPortalText:="|<>**50$238.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000Tk000000Ts00000000000003zy00000000000003XUDz000Dzw0000000000000Tzz00000001w0000A63sS003k0s000000000000300C0000000Dw0000kMA0A00Q00s000000000000A00A0000000kk00031VU0M03U01k000000000000k00M000000210000A6A00k0Q0030000000000003000k000000840000kMk0301U006000000000000A0030000000UE00031a0060A0A0A00001s000000k0060T0000210000A6M7kM0k7w0nzzU1zy3yzU030z0MDzUDzzs7s7zykNUn1U60sQ1wSD0C0QQT7U0A2C1Vk7VlsS01lswD1X3A60M70s7UU63U0NUk700k8A2A07620k03C0UQ67tkM1UM1US00AA00q00C030Uk9U06M0100BU01kM7S1U43020s00NU03M00M0A261g00RU0400w0071U30A0EA0A3U01g007U00k0kDs6k00q00k03k00Q20M0k10k0kC003k3US003030y0S001M0300C001k81U6043030s3UD0z1s3k40A001M3k7UDzUTs3U70U61k0EA0A3UT0M3w7UTUM0k00B0PUS1jC1x0T0Q20EC010k0UC1a1UD0S1a1U3001Y321s40844361k81UU061U61s4M6001s4860A00CEAA7UE0UEEAM70U7y00M30k7UNUM00DUEUM0k03l0lUS102110n0Q20Dk01U7C0K1w1UDzq121U303w41y1s408641w1k80z0030Dk3M10D0zyM4860A3z0M3k7UE0UTM3U70w7y00A000BU00w1yNUEUM0k801U00K1020DU00Q0kEA00M001a006k00q121U30U03003M4080P001k130k00k00AM00tU03M4860A200A00RUE0k1g00704A3001U01VU073005UEUM0k800M01a10306M00I0EkA003U0Q630sC00q321U31U00k0QMA060Ms21M110k007U7UMDz0S07QQAA0CC001k7Vlk0D3VswAsA660007zs1UzU0TzszUTk0Tk001zs3y00Dw1zzVzkTs0001s063000Ds00000000000s000000000000000000000MA00000000000000000000000000000000000001Uk00000000000000000000000000000000000006300000000000000000000000000000000000000MA00000000000000000000000000000000000001Uk00000000000000000000000000000000000006300000000000000000000000000000000000000Ds00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008"
+CaptchaText:="|<>**50$135.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000Dk00000001zk00000000003700000000yDU000001y000MM0000000S07000000Qs00230000000700M0000033000EM0000001U01000000MM00230000000M0080000033000EM00000030C30ssSC0MM0z23000ss00k7wMzzzzwC1wTzETw0zzk061lyS63VUv00z0S31kS6200UM0300Q03s07U1k03300E04600k0300D00s0600Ak0200Uk0A00M00s0600k01g00E04601U0300700k0C005U0200Uk087UM3UT3w3lk70s7UE046011w30y2MMUzu1w71w200UM08AkMAkH3460EMUsAkE063Uz1a30q2MMUnm3471a200kDys7UM7UH143zEMUs7UE030T30M3006MDUAC3470M200M00A00M00n0C00kMUw00E01U01k0300AM1k06347k0200600C00M03V0D00kMUq00E00Q07M2310sA1i0D346M22001s3lsssDy0sAw7MMklssk003zs7zz1z03z1zly3w7zy000000008A0000000000000000000011U000000000000000000008A0000000000000000000011U00000000000000000000AA000000000000000000001VU000000000000000000007s00000000000000000000000000000000000000000000000000000000004"
 ; Just in case a player runs into "Cannot place unit" these values will hold that placement number. This is
 ; needed for every placement amount because FindText doesn't recognize the text "Cannot place more than" very well.
 CannotPlaceUnit1:="|<>FF494C-0.90$479.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000700000000000000000000000C000000000000003k000Q01k000000003U0000DU0000000000000000S00000000000000000000000w000000000s0000DU001s07U00000000D003U3zk00000000003k0000w000000000000000000000S1s000000003k0000z00w3k0D000000000S3k70Dzs00000000007U0001s000000000000000000000w3k00000000DU0003y01s7U0C000000000Q7US0zzk0000000000D00003k000000000000000000001s7U00000000z00007U03kD0000000000000D0w3wD00000000000S00007U000000000000000000003kD000000003y0000D007US0000000000000S1s7k0000000000s0w0000D0000403U000001k000D007US00000000Dw00Q0S00D0w0007000000000w3kT007rXrsDTU7y7zU3rkS0TS1z0zk0SyDUDw7jVzU0zwxy0TSDTU0Ts03z3zk1ztvw7Vzk0w3XrsD7zbUw00Tz7zsTzUTyDz07zkw1zw7z3zk0zyzUzwDz7zU1ztzy1zwTzU0vk0Dz7zU3znzwD3zU1sD7zsSDzD1s01zyDzkzz1zyTy0Dzls7zsTyDzU1zzz3zwTyTz03znzw7zszz007U0zzDz07zbzsS7b03kSDzkwTyS3k03zwTzlzz7twTs0TznkDzkzwy7U3zzzDnsz9wD03z7zwTzlzz00D03wyDw07yDzswS007UwTzlsTsw7U0DXsy7XsSD1sS00y7bUyDXs1sD07lsyS3lw3kS03kDVsyDXsS00S07UwD007UT3lsT00D1sy7XkS0sD00S3lsD7UwS1sw01sDD1sD7U3sy0D3kww3nk7lw07US3lsD7Uw00w0D0wS00D0w7Xkzk0S3lsD7Uw1kT00w7XkSD1sw3ls03kSS3kSD07zs0S7Vts7bUDzk0D0w7XkSD1s01s0S1sw00S1sD7Uzk0w7XkSD1s00T01sD7UwS3lsD3k07kww7UwS0DU00wD3nkSD0T000S1sD7UwS3k03k0w7Vs00w3kSD0Tk0wD7UwS3k00z1nxyD1sw7Xsy7U0DztwDrszAT001sS7blwS0y000w3kSDrsw7U07U1wT3k01s7UwS07U1wyD1sw7U40zzXzwS3lsD3zwDs0TzVyDzkzwT703kwD7zsw0yC01z7UwDzlsD00D01zy7U03yD1swCD03zwS3lsDsQ0zzXzsw7XkS3zkDk0zy3wDzUzszy07VsS7zVs1zw01yD1sDzXkS00S01zsD003wS3lszw03zsw7XkDlw0zw3zls77UQ3z0TU1zs7sDz0zkzw0D3kw7y3k1zs03wS3kDz7UQ00w01zUS007sw3Xlzs03zls77UTXs0DU1X1UC60s1s0703k03U6A0S0Tk0C30k3k3U0zU00sQ3U6C60s00s00w0M001ks73Uz001XVUC7073U00000000000000007U000000000000000000000000000000000000000000000000000000000000000000000000000000D0000000000000000000000000000000000000000000000000000000000000000000000000000000S0000000000000000000000000000000000000000000000000000000000000000000000000000000w0000000000000000000000000000000000000000000000000000000000000000000000000000001s0000000000000000000000000000000000000000000000000000000000000000000000000000001U00000000000000000000000000000000000000000000000000000000000002"
@@ -64,11 +65,14 @@ GameModes["challenges"] := () => GoToChallenges()
 GameModes["magicHillsLegend1"] := () => GoToLegendStage(730, 245, 300, 240, "MagicHills", MagicHills(), false, 0)
 GameModes["magicHillsLegend2"] := () => GoToLegendStage(730, 245, 300, 270, "MagicHills", MagicHills(), false, 0)
 GameModes["magicHillsLegend3"] := () => GoToLegendStage(730, 245, 300, 305, "MagicHills", MagicHills(), false, 0)
-Gamemodes["rainVillageLegend1"] := () => GoToLegendStage(730, 430, 300, 240, "RainVillage", RainVillage(), true, 1)
-Gamemodes["rainVillageLegend2"] := () => GoToLegendStage(730, 430, 300, 270, "RainVillage", RainVillage(), true, 1)
-Gamemodes["rainVillageLegend3"] := () => GoToLegendStage(730, 430, 300, 305, "RainVillage", RainVillage(), true, 1)
-gameModes["infiniteUnitXP"] := () => GoToInfiniteMode(730, 330, "MagicHills", MagicHills(), true, 3)
-global currentGameMode := "default"
+GameModes["rainVillageLegend1"] := () => GoToLegendStage(730, 430, 300, 240, "RainVillage", RainVillage(), true, 1)
+GameModes["rainVillageLegend2"] := () => GoToLegendStage(730, 430, 300, 270, "RainVillage", RainVillage(), true, 1)
+GameModes["rainVillageLegend3"] := () => GoToLegendStage(730, 430, 300, 305, "RainVillage", RainVillage(), true, 1)
+GameModes["infiniteUnitXP"] := () => GoToInfiniteMode(730, 330, "MagicHills", MagicHills(), true, 3)
+GameModes["contractsTier1_3"] := () => GoToContracts(160, 410, 220, 410, true, true, "UnknownMap")
+GameModes["contractsTier4_6"] := () => GoToContracts(320, 410, 400, 410, true, true, "UnknownMap")
+GameModes["contractsTier7_12"] := () => GoToContracts(230, 410, 290, 410, false, false, "AssassinPark", AssassinPark())
+global currentGameMode := "contractsTier1_3"
 
 ; This stores all the maps in the entire game. CHeck Maps.ahk for more info (uses OOP)
 global storyMaps := [
@@ -158,6 +162,12 @@ InitializeMacro() {
                 currentGameMode := "rainVillageLegend2"
             case "Rain Village Legend 3":
                 currentGameMode := "rainVillageLegend3"
+            case "Contracts Tier 1-3":
+                currentGameMode := "contractsTier1_3"
+            case "Contracts Tier 4-6":
+                currentGameMode := "contractsTier4_6"
+            case "Contracts Tier 7-12":
+                currentGameMode := "contractsTier7_12"
             default:
                 MsgBox("Invalid gamemode selection for some reason. Pls report k thx bye", "Error")
                 return
@@ -607,6 +617,100 @@ GoToChallenges() {
     } ; end outer loop
 }
 
+GoToContracts(x1, y1, x2, y2, scrollLeft, randomMapDetection, mapName, mapObject := BaseMap()) {
+    Loop {
+        SendInput ("{Tab}")
+        ; randomMapDetection := true
+        enteringMap := false
+        captchaSolved := false
+        loop {
+
+            ; Attempts to detect the map name. If it doesn't find any, the default mapName is "UnkownMap"
+            AddToLog("Trying to find map")
+            if (enteringMap) {
+                if (randomMapDetection) {
+                    mapName := DetectMapName()
+                    break
+                } else {
+                    if (ok:=FindText(&X, &Y, 41, 108, 568, 173, 0, 0, mapObject.MapImage))
+                    {
+                        break ; break for loop
+                    }
+                }
+            }
+    
+            ; Prevention in case attempting to find the map doesn't work
+            if (ok := FindText(&X, &Y, 326, 60, 547, 173, 0, 0, VoteStart)) {
+                AddToLog("Found VoteStart, stopping loop")
+                break
+            }
+
+            if(enteringMap == true || captchaSolved == true) {
+                continue
+            }
+
+            BetterClick(35, 400) ;Click contracts
+            Sleep 1000
+            MouseMove(450, 300)
+            Sleep 50
+            if (scrollLeft) {
+                loop 3 {
+                    Sleep 500
+                    SendInput("{WheelUp 1}") ; scroll left to lower tier contracts
+                }
+            } else {
+                loop 3 {
+                    Sleep 500
+                    SendInput("{WheelDown 1}") ; scroll right to higher tier contracts
+                }
+            }
+            Sleep 100
+            if (matchMakingEnabled) {
+                loop {
+                    loop {
+                        BetterClick(x2, y2) ; play (matchmaking mode)
+                        Sleep 2000 
+                        if (ok:=FindText(&X, &Y, 326, 227, 537, 281, 0, 0, CaptchaText))
+                        {
+                            break
+                        }
+                    }
+                    captchaSolved := AntiCaptcha()
+                    AddToLog("returned from anti captcha")
+                    if (captchaSolved == true) {
+                        AddToLog("captcha solved")
+                        enteringMap := true
+                        break
+                    } else {
+                        Sleep 30000
+                    }
+                }
+            } else {
+                loop { ; Loop until we find the open portal text (contracts are on a timer and need to be refreshed)
+                    BetterClick(x1, y1) ; Click the open portal button for the selected tier
+                    Sleep 2000
+                    if (ok:=FindText(&X, &Y, 302, 260, 563, 314, 0, 0, OpenPortalText))
+                        {
+                            break
+                        }
+                }
+                Sleep 2000
+                BetterClick(230, 345) ; Click open
+                Sleep 2000
+                BetterClick(415, 450) ; click start
+            }
+            Sleep 2000
+            if !(matchMakingEnabled) {
+                enteringMap := true
+            }
+        }
+        ; Go to MapPlacementInstructions with the map that was found in the for loop. It is our first time calling, so true.
+        MapPlacementInstructions(mapName, true, randomMapDetection)
+        AddToLog("Finished game")
+        LobbyLoop() ; If replay is disable, then enter LobbyLoop. Once lobby is found, begin this entire loop again
+    } ; end outer loop
+}
+
 StopMacro() {
     if ControlGetVisible(keybindsGui) {
         return
@@ -650,6 +754,7 @@ MapPlacementInstructions(mapName, firstTimeCalling, randomMapDetection) {
         mapClasses["DungeonThrone"] := DungeonThrone()
         mapClasses["NightmareTrain"] := NightmareTrain()
         mapClasses["RainVillage"] := RainVillage()
+        mapClasses["AssassinPark"] := AssassinPark()
         ;mapClasses["SandVillage"] := SandVillage() ; **
         ; mapClasses["HauntedAcademy"] := HauntedAcademy() ; **
         ; mapClasses["SpaceCenter"] := SpaceCenter() ; **
@@ -1835,7 +1940,7 @@ TPtoSpawn() {
         SendInput("{WheelDown 1}") ; scroll
     }
     Sleep 600
-    BetterClick(523, 320) ; tp to spawn
+    BetterClick(523, 320) ; tp to spawn+
     Sleep 600
     BetterClick(582, 150) ; exit settings
 
@@ -1907,7 +2012,7 @@ AntiCaptcha() {
     Sleep 1500
     BetterClick(383, 221)
     Sleep 500
-    if (currentGameMode == "halloweenEvent") {
+    if (currentGameMode == "contractsTier1_3" || "contractsTier4_6" || "contractsTier7_12") {
         return true
     }
 
